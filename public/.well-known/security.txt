@@ -1,4 +1,4 @@
-Contact: mailto:hello@example.com
+Contact: mailto:hello@deltaaiinnovation.in
 Expires: 2027-10-09T00:00:00.000Z
 Preferred-Languages: en, hi
-Policy: https://deltaai.in/terms
+Policy: https://deltaaiinnovation.in/terms

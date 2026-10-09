@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 
 // Your live domain. Change it once here; canonical URLs, sitemap and
 // social preview links all follow it.
-const SITE = process.env.SITE_URL ?? 'https://deltaai.in';
+const SITE = process.env.SITE_URL ?? 'https://deltaaiinnovation.in';
 
 export default defineConfig({
   site: SITE,

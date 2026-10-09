@@ -9,7 +9,7 @@ const nav = [
   { href: '/#security', label: 'Security' },
   { href: '/#support', label: 'Support' },
 ];
-const path = Astro.url.pathname;
+const path = Astro.url.pathname.replace(/\.html$/, '');
 ---
 
 <header class="header">

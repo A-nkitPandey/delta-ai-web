@@ -13,7 +13,14 @@ export interface SeoProps {
 const { title, description = site.description, image = '/og.png', type = 'website', noindex = false, jsonLd = [] } = Astro.props as SeoProps;
 
 const fullTitle = title ? `${title} | ${site.name}` : `${site.name} — ${site.tagline}`;
-const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', Astro.site);
+// At build time the path can end in ".html" (e.g. /index.html, /services.html).
+// The live site serves clean URLs, so canonical links must match them exactly.
+const cleanPath =
+  Astro.url.pathname
+    .replace(/\/index\.html$/, '/')
+    .replace(/\.html$/, '')
+    .replace(/(.)\/$/, '$1') || '/';
+const canonical = new URL(cleanPath, Astro.site);
 const imageUrl = new URL(image, Astro.site);
 
 const sameAs = Object.values(site.social).filter(Boolean);
