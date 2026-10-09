@@ -4,6 +4,8 @@
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-10-01",
   "observability": { "enabled": true },
+  // Keep the free *.workers.dev link switched on (useful before and after a custom domain).
+  "workers_dev": true,
 
   // Public, non-secret settings. Secrets (TURNSTILE_SECRET_KEY,
   // RESEND_API_KEY, IP_HASH_SALT) are set with `npx wrangler secret put`.
