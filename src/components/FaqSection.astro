@@ -1,0 +1,80 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import SectionHeading from './SectionHeading.astro';
+interface Props {
+  items: CollectionEntry<'faq'>[];
+}
+const { items } = Astro.props;
+---
+
+<section id="faq" class="section wrap" aria-labelledby="faq-title">
+  <SectionHeading id="faq-title" eyebrow="FAQ" before="Good questions," accent="straight answers" after="." center />
+  <div class="list">
+    {
+      items.map((q) => (
+        <details class="glass item">
+          <summary>
+            <span>{q.data.question}</span>
+            <span class="plus" aria-hidden="true" />
+          </summary>
+          <p class="muted">{q.data.answer}</p>
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .list {
+    margin: 48px auto 0;
+    max-width: 820px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .item {
+    padding: 0 22px;
+    border-radius: var(--r-md);
+  }
+  summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 64px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .plus {
+    position: relative;
+    flex: none;
+    width: 14px;
+    height: 14px;
+  }
+  .plus::before,
+  .plus::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 14px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--mint);
+    transition: transform 0.2s;
+  }
+  .plus::after {
+    transform: rotate(90deg);
+  }
+  details[open] .plus::after {
+    transform: rotate(0deg);
+  }
+  p {
+    padding-bottom: 20px;
+    line-height: 1.65;
+  }
+</style>

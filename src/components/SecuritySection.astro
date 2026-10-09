@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+const items = (await getCollection('security')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section id="security" class="section wrap" aria-labelledby="security-title">
+  <div class="layout">
+    <div class="intro">
+      <SectionHeading id="security-title" eyebrow="Security by default" before="Locked down before" accent="launch day" after="." />
+      <p class="lead">Every project ships with the same security baseline, checked against the OWASP ASVS and handed over with a written report.</p>
+    </div>
+    <ul class="grid">
+      {
+        items.map((it) => (
+          <li class="glass item">
+            <Icon name="check" size={20} strokeWidth={2} class="tick" />
+            <div>
+              <h3>{it.data.title}</h3>
+              <p class="muted">{it.data.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 48px;
+    align-items: flex-start;
+  }
+  .intro {
+    flex: 1 1 380px;
+    min-width: 0;
+  }
+  .lead {
+    margin-top: 18px;
+    max-width: 440px;
+    font-size: 16px;
+  }
+  .grid {
+    flex: 1 1 520px;
+    min-width: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+    gap: 12px;
+  }
+  .item {
+    display: flex;
+    gap: 14px;
+    padding: 20px;
+    border-radius: var(--r-md);
+  }
+  .item :global(.tick) {
+    flex: none;
+    margin-top: 2px;
+    color: var(--mint);
+  }
+  h3 {
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+  }
+  p {
+    margin-top: 4px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+</style>

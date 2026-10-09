@@ -1,0 +1,302 @@
+---
+import { getCollection } from 'astro:content';
+import { site } from '@/lib/site';
+import Icon from './Icon.astro';
+
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
+const budgets = ['Not sure yet', 'Under ₹1 lakh', '₹1–5 lakh', '₹5–15 lakh', '₹15 lakh +'];
+const whatsapp = site.contact.whatsapp;
+---
+
+<section id="contact" class="section wrap" aria-labelledby="contact-title">
+  <div class="box">
+    <div class="intro">
+      <h2 id="contact-title" class="h2">Have an idea? <span class="accent accent--mint">Let’s build it.</span></h2>
+      <p class="lead">{site.contact.replyPromise}</p>
+      <ul class="direct">
+        <li>
+          <a href={`mailto:${site.contact.email}`}><Icon name="mail" size={18} strokeWidth={2} />{site.contact.email}</a>
+        </li>
+        {
+          site.contact.phone && (
+            <li>
+              <a href={`tel:${site.contact.phone.replace(/\s/g, '')}`}>
+                <Icon name="phone" size={18} strokeWidth={2} />
+                {site.contact.phone}
+              </a>
+            </li>
+          )
+        }
+        {
+          whatsapp && (
+            <li>
+              <a href={`https://wa.me/${whatsapp}`} rel="noopener" target="_blank">
+                <Icon name="whatsapp" size={18} strokeWidth={2} />
+                Chat on WhatsApp
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+
+    <form id="contact-form" class="form" action="/api/contact" method="post" novalidate data-sitekey={siteKey}>
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required maxlength="100" />
+      </div>
+      <div class="field">
+        <label for="f-email">Work email</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" required maxlength="200" />
+      </div>
+      <div class="field">
+        <label for="f-company">Company <span class="opt">(optional)</span></label>
+        <input id="f-company" name="company" type="text" autocomplete="organization" maxlength="120" />
+      </div>
+      <div class="field">
+        <label for="f-service">What do you need?</label>
+        <select id="f-service" name="service" required>
+          {services.map((s) => <option value={s.id}>{s.data.title}</option>)}
+          <option value="support-plan">Support plan</option>
+          <option value="other">Something else</option>
+        </select>
+      </div>
+      <div class="field full">
+        <label for="f-budget">Budget</label>
+        <select id="f-budget" name="budget" required>
+          {budgets.map((b) => <option value={b}>{b}</option>)}
+        </select>
+      </div>
+      <div class="field full">
+        <label for="f-msg">Tell us about the project</label>
+        <textarea id="f-msg" name="message" rows="5" required minlength="10" maxlength="4000"></textarea>
+      </div>
+
+      <!-- Honeypot: invisible to people, tempting to bots. -->
+      <div class="hp" aria-hidden="true">
+        <label for="f-website">Website</label>
+        <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <div class="full turnstile" id="ts-widget"></div>
+
+      <button type="submit" class="btn btn--primary btn--block full" id="f-submit">Send request</button>
+      <p class="full status" id="f-status" role="status" aria-live="polite"></p>
+      <p class="full fine">Protected by Cloudflare Turnstile. We only use your details to reply. See our <a href="/privacy">privacy policy</a>.</p>
+      <noscript><p class="full fine">This form needs JavaScript. You can also email us at <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.</p></noscript>
+    </form>
+  </div>
+</section>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+
+<script>
+  type TurnstileApi = {
+    render: (el: HTMLElement, opts: Record<string, unknown>) => string;
+    reset: (id?: string) => void;
+    getResponse: (id?: string) => string | undefined;
+  };
+  declare global {
+    interface Window {
+      turnstile?: TurnstileApi;
+    }
+  }
+
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  if (form) {
+    const status = document.getElementById('f-status') as HTMLElement;
+    const submit = document.getElementById('f-submit') as HTMLButtonElement;
+    const widgetEl = document.getElementById('ts-widget') as HTMLElement;
+    let widgetId: string | undefined;
+
+    // Pre-select a service when arriving from a service page or plan card.
+    const params = new URLSearchParams(location.search);
+    const wanted = params.get('service') ?? (params.get('plan') ? 'support-plan' : null);
+    const select = document.getElementById('f-service') as HTMLSelectElement | null;
+    if (wanted && select && Array.from(select.options).some((o) => o.value === wanted)) select.value = wanted;
+
+    // Render Turnstile once its script has loaded.
+    const renderWidget = () => {
+      if (!window.turnstile || widgetId !== undefined) return;
+      widgetId = window.turnstile.render(widgetEl, {
+        sitekey: form.dataset.sitekey,
+        theme: 'dark',
+        appearance: 'interaction-only',
+        action: 'contact',
+      });
+    };
+    const wait = setInterval(() => {
+      if (window.turnstile) {
+        clearInterval(wait);
+        renderWidget();
+      }
+    }, 150);
+    setTimeout(() => clearInterval(wait), 20000);
+
+    const setStatus = (msg: string, kind: 'ok' | 'err' | '') => {
+      status.textContent = msg;
+      status.dataset.kind = kind;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setStatus('', '');
+
+      if (!form.checkValidity()) {
+        const firstBad = form.querySelector<HTMLElement>(':invalid');
+        firstBad?.focus();
+        setStatus('Please fill in your name, a valid email and a short message.', 'err');
+        return;
+      }
+
+      const token = window.turnstile?.getResponse(widgetId);
+      if (!token) {
+        setStatus('Just a second — completing the spam check. Please try again.', 'err');
+        return;
+      }
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      submit.disabled = true;
+      submit.textContent = 'Sending…';
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...data, token, page: location.pathname }),
+        });
+        const body = (await res.json().catch(() => ({}))) as { message?: string };
+        if (res.ok) {
+          form.reset();
+          setStatus(body.message ?? 'Thanks! We’ll reply within one business day.', 'ok');
+        } else {
+          setStatus(body.message ?? 'Something went wrong. Please email us instead.', 'err');
+        }
+      } catch {
+        setStatus('Network error. Please check your connection and try again.', 'err');
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'Send request';
+        window.turnstile?.reset(widgetId);
+      }
+    });
+  }
+</script>
+
+<style>
+  .box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 48px;
+    padding: clamp(24px, 5vw, 64px);
+    border-radius: var(--r-xl);
+    background: linear-gradient(160deg, rgba(124, 240, 206, 0.1), rgba(169, 182, 255, 0.06) 50%, rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  .intro {
+    flex: 1 1 340px;
+    min-width: 0;
+  }
+  .lead {
+    margin-top: 18px;
+    max-width: 400px;
+    font-size: 16px;
+  }
+  .direct {
+    margin-top: 32px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .direct a {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    color: var(--text);
+    text-decoration: none;
+    word-break: break-word;
+  }
+  .direct a :global(svg) {
+    color: var(--mint);
+    flex: none;
+  }
+  .form {
+    flex: 1 1 420px;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: 14px;
+  }
+  .full {
+    grid-column: 1 / -1;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  label {
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .opt {
+    color: var(--faint);
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 14px;
+    border-radius: 12px;
+    background: rgba(7, 9, 13, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text);
+    transition: border-color 0.2s;
+  }
+  select {
+    padding: 0 12px;
+  }
+  textarea {
+    padding: 12px 14px;
+    resize: vertical;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--mint);
+  }
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .turnstile:empty {
+    display: none;
+  }
+  .status {
+    min-height: 1.5em;
+    font-size: 14px;
+  }
+  .status[data-kind='ok'] {
+    color: var(--mint);
+  }
+  .status[data-kind='err'] {
+    color: #ffb4a8;
+  }
+  .fine {
+    font-size: 12px;
+    color: var(--faint);
+  }
+  button:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+</style>

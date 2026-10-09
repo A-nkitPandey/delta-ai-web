@@ -1,0 +1,32 @@
+---
+interface Props {
+  eyebrow?: string;
+  before: string;
+  accent?: string;
+  after?: string;
+  center?: boolean;
+  as?: 'h1' | 'h2';
+  id?: string;
+}
+const { eyebrow, before, accent, after = '', center = false, as: Tag = 'h2', id } = Astro.props;
+---
+
+<div class:list={['heading', { center }]}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <Tag class="h2" id={id}>
+    {before}{accent && <> <span class="accent">{accent}</span></>}{after}
+  </Tag>
+</div>
+
+<style>
+  .heading {
+    max-width: 680px;
+  }
+  .center {
+    margin-inline: auto;
+    text-align: center;
+  }
+  .eyebrow {
+    margin-bottom: 14px;
+  }
+</style>

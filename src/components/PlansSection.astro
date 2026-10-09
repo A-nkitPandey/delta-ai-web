@@ -1,0 +1,104 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+const plans = (await getCollection('plans')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section id="support" class="section wrap" aria-labelledby="support-title">
+  <SectionHeading id="support-title" eyebrow="Support & care plans" before="We stay after" accent="go-live" after="." center />
+  <div class="grid">
+    {
+      plans.map((p) => (
+        <article class:list={['glass', 'plan', { hot: p.data.highlighted }]}>
+          {p.data.badge && <span class="chip chip--mint badge">{p.data.badge}</span>}
+          <h3>{p.data.name}</h3>
+          <p class="muted blurb">{p.data.blurb}</p>
+          <p class="price">
+            {p.data.price}
+            {p.data.period && <span class="period"> {p.data.period}</span>}
+          </p>
+          <ul class="features">
+            {p.data.features.map((f) => (
+              <li>
+                <Icon name="check" size={16} strokeWidth={2} class="tick" />
+                {f}
+              </li>
+            ))}
+          </ul>
+          <a href={`/?plan=${p.id}#contact`} class:list={['btn', 'btn--block', p.data.highlighted ? 'btn--primary' : 'btn--ghost']}>
+            {p.data.cta}
+          </a>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .grid {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: 18px;
+    align-items: stretch;
+  }
+  .plan {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+  }
+  .hot {
+    background: linear-gradient(180deg, rgba(124, 240, 206, 0.12), rgba(255, 255, 255, 0.03));
+    border-color: rgba(124, 240, 206, 0.35);
+    box-shadow: 0 30px 80px rgba(124, 240, 206, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  .badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  h3 {
+    font-size: 18px;
+    letter-spacing: -0.01em;
+  }
+  .blurb {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+  .price {
+    margin-top: 24px;
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .period {
+    font-size: 15px;
+    color: var(--faint);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .features {
+    list-style: none;
+    margin: 24px 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .features li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .features :global(.tick) {
+    flex: none;
+    margin-top: 4px;
+    color: var(--mint);
+  }
+  .plan .btn {
+    margin-top: auto;
+  }
+</style>

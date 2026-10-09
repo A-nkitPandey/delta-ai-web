@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import ServiceCard from '@/components/ServiceCard.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ContactSection from '@/components/ContactSection.astro';
+
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Services" description="AI solutions, web and mobile apps, payment integrations, legacy .NET modernization, business systems and booking SaaS — built and supported by Delta AI.">
+  <div class="wrap page">
+    <Breadcrumbs items={[{ name: 'Services', href: '/services' }]} />
+    <SectionHeading as="h1" eyebrow="Services" before="Everything you need to" accent="ship" after=", in one team." />
+    <div class="grid">
+      {services.map((s) => <ServiceCard service={s} headingLevel="h2" />)}
+    </div>
+  </div>
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: clamp(40px, 7vw, 72px);
+  }
+  .grid {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 18px;
+  }
+</style>

@@ -1,0 +1,240 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+
+const projects = (await getCollection('work', ({ data }) => !data.draft && data.featured)).sort((a, b) => a.data.order - b.data.order);
+---
+
+{
+  projects.length > 0 && (
+    <section id="work" class="section wrap" aria-labelledby="work-title">
+      <h2 id="work-title" class="eyebrow">
+        Featured work
+      </h2>
+      {projects.map((p) => (
+        <article class="feature">
+          <div class="copy">
+            <ul class="chips">
+              <li class="chip">{p.data.industry}</li>
+              {p.data.tags.map((t) => (
+                <li class="chip">{t}</li>
+              ))}
+            </ul>
+            <h3 class="title">
+              {p.data.headline}
+              {p.data.accentWord && (
+                <>
+                  {' '}
+                  <span class="accent">{p.data.accentWord}</span>
+                </>
+              )}
+              .
+            </h3>
+            <p class="muted summary">{p.data.summary}</p>
+            {p.data.metrics.length > 0 && (
+              <dl class="metrics">
+                {p.data.metrics.map((m) => (
+                  <div class="metric">
+                    <dt class="sr-only">{m.label}</dt>
+                    <dd class="value">{m.value}</dd>
+                    <dd class="label">{m.label}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+            <div class="links">
+              <a href={`/work/${p.id}`} class="btn btn--ghost btn--sm">
+                Read the case study
+              </a>
+              {p.data.url && (
+                <a href={p.data.url} class="ext" rel="noopener" target="_blank">
+                  Visit {new URL(p.data.url).hostname}
+                  <Icon name="arrow-up-right" size={16} strokeWidth={2} />
+                </a>
+              )}
+            </div>
+          </div>
+          {p.data.cover ? (
+            <div class="phone-wrap">
+              <Image src={p.data.cover} alt={p.data.coverAlt ?? ''} widths={[480, 800]} sizes="(max-width: 860px) 90vw, 480px" class="cover" />
+            </div>
+          ) : (
+          <div class="phone-wrap" aria-hidden="true">
+            <div class="phone">
+              <div class="screen">
+                <div class="brand">{p.data.client.toUpperCase()}</div>
+                <div class="your">Your token</div>
+                <div class="big">17</div>
+                <div class="box">
+                  <div class="r">
+                    <span>Now serving</span>
+                    <b>#14</b>
+                  </div>
+                  <div class="r">
+                    <span>Approx. wait</span>
+                    <b>~ 25 min</b>
+                  </div>
+                </div>
+                <div class="notify">Notify me near my turn</div>
+              </div>
+            </div>
+          </div>
+          )}
+        </article>
+      ))}
+    </section>
+  )
+}
+
+<style>
+  .feature {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(169, 182, 255, 0.1), rgba(255, 255, 255, 0.02) 55%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .copy {
+    flex: 1 1 460px;
+    min-width: 0;
+    padding: clamp(28px, 4vw, 56px);
+  }
+  .title {
+    margin-top: 22px;
+    font-size: clamp(28px, 3.4vw, 42px);
+    line-height: 1.1;
+  }
+  .summary {
+    margin-top: 16px;
+    max-width: 480px;
+    line-height: 1.65;
+  }
+  .metrics {
+    margin: 32px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+  }
+  .metric {
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(7, 9, 13, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  dd {
+    margin: 0;
+  }
+  .value {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .label {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--faint);
+  }
+  .links {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+  }
+  .ext {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .phone-wrap {
+    flex: 1 1 380px;
+    min-width: 0;
+    padding: 40px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(closest-side, rgba(124, 240, 206, 0.12), rgba(124, 240, 206, 0) 75%);
+  }
+  .phone-wrap :global(.cover) {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+  }
+  .phone {
+    width: 260px;
+    height: 520px;
+    border-radius: 44px;
+    padding: 12px;
+    background: #11141b;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  .screen {
+    height: 100%;
+    border-radius: 34px;
+    background: linear-gradient(180deg, #15110d, #0b0a08);
+    padding: 28px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: center;
+    color: #f5e9d6;
+  }
+  .brand {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: #b8a88f;
+  }
+  .your {
+    font-size: 15px;
+    color: #e9dfd0;
+  }
+  .big {
+    font-size: 72px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+  }
+  .box {
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(245, 233, 214, 0.06);
+    border: 1px solid rgba(245, 233, 214, 0.1);
+    text-align: left;
+  }
+  .r {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #b8a88f;
+  }
+  .r + .r {
+    margin-top: 10px;
+  }
+  .r b {
+    color: #f5e9d6;
+    font-weight: 500;
+  }
+  .notify {
+    margin-top: auto;
+    min-height: 44px;
+    border-radius: 14px;
+    background: #e8c89a;
+    color: #2a1d0e;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

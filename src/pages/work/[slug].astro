@@ -1,0 +1,158 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import Icon from '@/components/Icon.astro';
+import ContactSection from '@/components/ContactSection.astro';
+import { site } from '@/lib/site';
+
+export async function getStaticPaths() {
+  const work = await getCollection('work', ({ data }) => !data.draft);
+  return work.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+interface Props {
+  project: CollectionEntry<'work'>;
+}
+const { project } = Astro.props;
+const { Content } = await render(project);
+const d = project.data;
+const services = (await getCollection('services')).filter((s) => d.services.includes(s.id));
+
+const jsonLd = [
+  {
+    '@type': 'CreativeWork',
+    name: `${d.title} — ${d.client}`,
+    description: d.summary,
+    creator: { '@id': new URL('/#organization', Astro.site).href, name: site.name },
+    ...(d.year ? { dateCreated: String(d.year) } : {}),
+    ...(d.url ? { url: d.url } : {}),
+  },
+];
+---
+
+<BaseLayout title={d.seo?.title ?? `${d.title} case study`} description={d.seo?.description ?? d.summary} type="article" jsonLd={jsonLd}>
+  <article class="wrap page">
+    <Breadcrumbs items={[{ name: 'Work', href: '/#work' }, { name: d.title, href: `/work/${project.id}` }]} />
+    <header class="head">
+      <ul class="chips">
+        <li class="chip">{d.industry}</li>
+        {d.tags.map((t) => <li class="chip">{t}</li>)}
+      </ul>
+      <h1>
+        {d.headline}{d.accentWord && <> <span class="accent accent--mint">{d.accentWord}</span></>}.
+      </h1>
+      <p class="lead">{d.summary}</p>
+      <dl class="facts">
+        <div><dt>Client</dt><dd>{d.client}</dd></div>
+        {d.year && <div><dt>Year</dt><dd>{d.year}</dd></div>}
+        {
+          d.url && (
+            <div>
+              <dt>Live</dt>
+              <dd>
+                <a href={d.url} rel="noopener" target="_blank">
+                  {new URL(d.url).hostname}
+                  <Icon name="arrow-up-right" size={14} strokeWidth={2} class="inline" />
+                </a>
+              </dd>
+            </div>
+          )
+        }
+        {
+          services.length > 0 && (
+            <div>
+              <dt>Services</dt>
+              <dd>
+                {services.map((s, i) => (
+                  <>
+                    {i > 0 && ', '}
+                    <a href={`/services/${s.id}`}>{s.data.title}</a>
+                  </>
+                ))}
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+    </header>
+
+    {
+      d.metrics.length > 0 && (
+        <dl class="metrics">
+          {d.metrics.map((m) => (
+            <div class="glass metric">
+              <dt class="label">{m.label}</dt>
+              <dd class="value">{m.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+
+    <div class="prose body"><Content /></div>
+  </article>
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: clamp(40px, 7vw, 72px);
+  }
+  .head {
+    max-width: 820px;
+  }
+  h1 {
+    margin-top: 22px;
+    font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.04;
+  }
+  .lead {
+    margin-top: 18px;
+  }
+  .facts {
+    margin: 32px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 40px;
+    font-size: 14px;
+  }
+  dt {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  dd {
+    margin: 4px 0 0;
+    color: var(--text-2);
+  }
+  dd a {
+    text-decoration: none;
+  }
+  :global(.inline) {
+    display: inline;
+    vertical-align: -2px;
+  }
+  .metrics {
+    margin: 48px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .metric {
+    padding: 20px;
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .value {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .body {
+    margin-top: 56px;
+  }
+</style>

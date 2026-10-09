@@ -1,0 +1,7 @@
+# Copy to .dev.vars for local development. Never commit .dev.vars.
+# These are Cloudflare's official Turnstile TEST keys (always pass).
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+# Leave empty locally to skip sending email (leads are still saved to D1).
+RESEND_API_KEY=
+# Any long random string. Generate one with: openssl rand -hex 32
+IP_HASH_SALT=change-me-to-a-long-random-string

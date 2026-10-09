@@ -1,0 +1,49 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHeading from './SectionHeading.astro';
+const steps = (await getCollection('process')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section id="process" class="section wrap" aria-labelledby="process-title">
+  <SectionHeading id="process-title" eyebrow="How we work" before="Clear steps." accent="No surprises." center />
+  <ol class="steps">
+    {
+      steps.map((s, i) => (
+        <li class="glass step">
+          <span class="n">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{s.data.title}</h3>
+          <p class="muted">{s.data.text}</p>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  .steps {
+    margin-top: 56px;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr));
+    gap: 14px;
+  }
+  .step {
+    padding: 24px;
+    border-radius: 20px;
+  }
+  .n {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--mint);
+  }
+  h3 {
+    margin-top: 14px;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  p {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+</style>

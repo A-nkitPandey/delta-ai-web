@@ -1,0 +1,154 @@
+# Pages CMS (https://pagescms.org) — optional free editor.
+# Sign in at app.pagescms.org with GitHub, open this repo, and edit
+# content in forms. Every save is a Git commit; Cloudflare rebuilds the
+# site automatically within a minute or two.
+
+media:
+  input: public/images
+  output: /images
+
+content:
+  - name: site
+    label: Site settings
+    type: file
+    path: src/content/site.json
+    format: json
+    fields:
+      - { name: name, label: Brand name, type: string, required: true }
+      - { name: legalName, label: Legal name, type: string, required: true }
+      - { name: tagline, label: Tagline, type: string }
+      - { name: description, label: SEO description (max 170 chars), type: text }
+      - name: announcement
+        label: Announcement pill
+        type: object
+        fields:
+          - { name: label, label: Label, type: string }
+          - { name: text, label: Text, type: string }
+          - { name: href, label: Link, type: string }
+      - name: hero
+        label: Hero
+        type: object
+        fields:
+          - { name: before, label: Headline before accent, type: string }
+          - { name: accent, label: Accent word (italic), type: string }
+          - { name: after, label: Headline after accent, type: string }
+          - { name: intro, label: Intro, type: text }
+          - { name: primaryCta, label: Primary button, type: string }
+          - { name: secondaryCta, label: Secondary button, type: string }
+      - { name: stack, label: Tech stack strip, type: string, list: true }
+      - { name: clients, label: Client names, type: string, list: true }
+      - name: contact
+        label: Contact
+        type: object
+        fields:
+          - { name: email, label: Email, type: string, required: true }
+          - { name: phone, label: Phone, type: string }
+          - { name: whatsapp, label: WhatsApp (digits with country code), type: string }
+          - { name: city, label: City / country, type: string }
+          - { name: replyPromise, label: Reply promise, type: text }
+      - name: social
+        label: Social links
+        type: object
+        fields:
+          - { name: linkedin, label: LinkedIn URL, type: string }
+          - { name: github, label: GitHub URL, type: string }
+          - { name: x, label: X URL, type: string }
+          - { name: instagram, label: Instagram URL, type: string }
+      - { name: foundingYear, label: Founding year, type: number }
+
+  - name: services
+    label: Services
+    type: collection
+    path: src/content/services
+    format: yaml-frontmatter
+    view:
+      fields: [title, order]
+      primary: title
+      sort: [order]
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - { name: summary, label: Card summary (max 200), type: text, required: true }
+      - name: icon
+        label: Icon
+        type: select
+        options: { values: [ai, apps, payments, modernize, systems, calendar, shield, chart, cloud] }
+      - { name: tags, label: Tags (max 4), type: string, list: true }
+      - { name: order, label: Order, type: number }
+      - { name: featured, label: Highlight card, type: boolean }
+      - { name: deliverables, label: What you get, type: string, list: true }
+      - { name: idealFor, label: Ideal for, type: string, list: true }
+      - { name: draft, label: Hide (draft), type: boolean }
+      - name: seo
+        label: SEO
+        type: object
+        fields:
+          - { name: title, label: SEO title (max 70), type: string }
+          - { name: description, label: SEO description (max 170), type: text }
+      - { name: body, label: Page text, type: rich-text }
+
+  - name: work
+    label: Case studies
+    type: collection
+    path: src/content/work
+    format: yaml-frontmatter
+    view:
+      fields: [title, client, order]
+      primary: title
+    fields:
+      - { name: title, label: Project name, type: string, required: true }
+      - { name: headline, label: Headline, type: string, required: true }
+      - { name: accentWord, label: Accent words (italic, end of headline), type: string }
+      - { name: client, label: Client, type: string, required: true }
+      - { name: url, label: Live URL, type: string }
+      - { name: summary, label: Summary, type: text, required: true }
+      - { name: industry, label: Industry, type: string }
+      - { name: tags, label: Tags, type: string, list: true }
+      - name: metrics
+        label: Results
+        type: object
+        list: true
+        fields:
+          - { name: value, label: Value, type: string }
+          - { name: label, label: Label, type: string }
+      - { name: services, label: Related service file names, type: string, list: true }
+      - { name: order, label: Order, type: number }
+      - { name: featured, label: Feature on home page, type: boolean }
+      - { name: year, label: Year, type: number }
+      - { name: draft, label: Hide (draft), type: boolean }
+      - name: seo
+        label: SEO
+        type: object
+        fields:
+          - { name: title, label: SEO title, type: string }
+          - { name: description, label: SEO description, type: text }
+      - { name: body, label: Case study, type: rich-text }
+
+  - name: plans
+    label: Support plans
+    type: file
+    path: src/content/plans.json
+    format: json
+    list: true
+    fields:
+      - { name: id, label: ID (lowercase, no spaces), type: string, required: true }
+      - { name: name, label: Name, type: string }
+      - { name: blurb, label: Blurb, type: string }
+      - { name: price, label: Price, type: string }
+      - { name: period, label: Period (e.g. /month), type: string }
+      - { name: features, label: Features, type: string, list: true }
+      - { name: cta, label: Button, type: string }
+      - { name: highlighted, label: Highlight, type: boolean }
+      - { name: badge, label: Badge, type: string }
+      - { name: order, label: Order, type: number }
+
+  - name: faq
+    label: FAQ
+    type: file
+    path: src/content/faq.json
+    format: json
+    list: true
+    fields:
+      - { name: id, label: ID, type: string, required: true }
+      - { name: question, label: Question, type: string }
+      - { name: answer, label: Answer, type: text }
+      - { name: order, label: Order, type: number }

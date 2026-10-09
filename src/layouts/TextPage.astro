@@ -1,0 +1,39 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  updated?: string;
+}
+// Markdown pages pass their front matter as `frontmatter`; .astro pages pass props directly.
+const { title, description, path, updated } = ((Astro.props as { frontmatter?: Props }).frontmatter ?? Astro.props) as Props;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="wrap page">
+    <Breadcrumbs items={[{ name: title, href: path }]} />
+    <h1>{title}</h1>
+    {updated && <p class="updated">Last updated: {updated}</p>}
+    <div class="prose body"><slot /></div>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: clamp(40px, 7vw, 72px);
+    padding-bottom: 80px;
+  }
+  h1 {
+    font-size: clamp(36px, 5vw, 56px);
+  }
+  .updated {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--faint);
+  }
+  .body {
+    margin-top: 40px;
+  }
+</style>

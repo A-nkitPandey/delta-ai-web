@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/Hero.astro';
+import ServicesSection from '@/components/ServicesSection.astro';
+import FeaturedWork from '@/components/FeaturedWork.astro';
+import ProcessSection from '@/components/ProcessSection.astro';
+import SecuritySection from '@/components/SecuritySection.astro';
+import PlansSection from '@/components/PlansSection.astro';
+import FaqSection from '@/components/FaqSection.astro';
+import ContactSection from '@/components/ContactSection.astro';
+import { site } from '@/lib/site';
+
+const faq = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+
+const jsonLd = [
+  {
+    '@type': 'WebSite',
+    '@id': new URL('/#website', Astro.site).href,
+    url: Astro.site?.href,
+    name: site.name,
+    publisher: { '@id': new URL('/#organization', Astro.site).href },
+    inLanguage: 'en-IN',
+  },
+  {
+    '@type': 'ItemList',
+    name: `${site.name} services`,
+    itemListElement: services.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: new URL(`/services/${s.id}`, Astro.site).href,
+      name: s.data.title,
+    })),
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: faq.map((q) => ({
+      '@type': 'Question',
+      name: q.data.question,
+      acceptedAnswer: { '@type': 'Answer', text: q.data.answer },
+    })),
+  },
+];
+---
+
+<BaseLayout jsonLd={jsonLd}>
+  <Hero />
+  <ServicesSection />
+  <FeaturedWork />
+  <ProcessSection />
+  <SecuritySection />
+  <PlansSection />
+  <FaqSection items={faq} />
+  <ContactSection />
+</BaseLayout>

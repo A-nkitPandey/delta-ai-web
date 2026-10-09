@@ -1,0 +1,162 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+
+const nav = [
+  { href: '/services', label: 'Services' },
+  { href: '/#work', label: 'Work' },
+  { href: '/#process', label: 'Process' },
+  { href: '/#security', label: 'Security' },
+  { href: '/#support', label: 'Support' },
+];
+const path = Astro.url.pathname;
+---
+
+<header class="header">
+  <nav class="bar wrap-inner" aria-label="Primary">
+    <Logo />
+    <ul class="links">
+      {
+        nav.map((item) => (
+          <li>
+            <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a href="/#contact" class="btn btn--primary btn--sm cta">Start a project</a>
+
+    <!-- Mobile menu: pure HTML <details>, works with JavaScript off. -->
+    <details class="mobile">
+      <summary aria-label="Menu">
+        <Icon name="menu" size={20} strokeWidth={2} class="i-open" />
+        <Icon name="close" size={20} strokeWidth={2} class="i-close" />
+      </summary>
+      <div class="sheet">
+        <ul>
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+        <a href="/#contact" class="btn btn--primary btn--block">Start a project</a>
+      </div>
+    </details>
+  </nav>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: 16px var(--gutter) 0;
+  }
+  .bar {
+    position: relative;
+    max-width: var(--wrap);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 12px 10px 18px;
+    border-radius: var(--r-md);
+    background: rgba(14, 17, 23, 0.62);
+    border: 1px solid var(--edge);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), var(--highlight);
+  }
+  .links {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    font-size: 14px;
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 10px;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .links a:hover,
+  .links a[aria-current='page'] {
+    color: var(--text);
+    background: var(--glass-2);
+  }
+  .mobile {
+    display: none;
+  }
+
+  @media (max-width: 860px) {
+    .links,
+    .cta {
+      display: none;
+    }
+    .mobile {
+      display: block;
+    }
+    summary {
+      list-style: none;
+      display: inline-flex;
+      width: 44px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      border: 1px solid var(--edge-2);
+      background: var(--glass-2);
+      cursor: pointer;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    .mobile :global(.i-close),
+    .mobile[open] :global(.i-open) {
+      display: none;
+    }
+    .mobile[open] :global(.i-close) {
+      display: block;
+    }
+    .sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 8px);
+      padding: 12px;
+      border-radius: var(--r-md);
+      background: rgba(14, 17, 23, 0.96);
+      border: 1px solid var(--edge);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    }
+    .sheet ul {
+      list-style: none;
+      margin-bottom: 12px;
+    }
+    .sheet a:not(.btn) {
+      display: flex;
+      align-items: center;
+      min-height: 48px;
+      padding: 0 12px;
+      border-radius: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 16px;
+    }
+    .sheet a:not(.btn):hover {
+      background: var(--glass-2);
+    }
+  }
+</style>

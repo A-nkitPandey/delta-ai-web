@@ -1,0 +1,35 @@
+{
+  "name": "Delta AI",
+  "legalName": "Delta AI Innovation",
+  "tagline": "AI-powered software, built to last",
+  "description": "Delta AI designs, builds and supports AI-powered web apps, business systems and payment-ready platforms for growing businesses in India.",
+  "announcement": {
+    "label": "NEW",
+    "text": "AI agents for Indian SMBs — now taking projects",
+    "href": "/#contact"
+  },
+  "hero": {
+    "before": "We build software that",
+    "accent": "thinks",
+    "after": ", ships and stays secure.",
+    "intro": "Delta AI designs, builds and supports AI-powered web apps, business systems and payment-ready platforms — from first sketch to round-the-clock care.",
+    "primaryCta": "Book a discovery call",
+    "secondaryCta": "See our work"
+  },
+  "stack": [".NET 10 LTS", "Astro", "Next.js", "PostgreSQL", "Cloudflare", "UPI · Razorpay · Paytm"],
+  "clients": ["Khan Popular Salon"],
+  "contact": {
+    "email": "hello@example.com",
+    "phone": "",
+    "whatsapp": "",
+    "city": "India",
+    "replyPromise": "You’ll get a reply within one business day with next steps and a rough estimate."
+  },
+  "social": {
+    "linkedin": "",
+    "github": "https://github.com/A-nkitPandey",
+    "x": "",
+    "instagram": ""
+  },
+  "foundingYear": 2026
+}

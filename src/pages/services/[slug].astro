@@ -1,0 +1,186 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import Icon from '@/components/Icon.astro';
+import ServiceCard from '@/components/ServiceCard.astro';
+import ContactSection from '@/components/ContactSection.astro';
+import { site } from '@/lib/site';
+
+export async function getStaticPaths() {
+  const services = await getCollection('services', ({ data }) => !data.draft);
+  return services.map((service) => ({ params: { slug: service.id }, props: { service } }));
+}
+
+interface Props {
+  service: CollectionEntry<'services'>;
+}
+const { service } = Astro.props;
+const { Content } = await render(service);
+const d = service.data;
+
+const others = (await getCollection('services', ({ data, id }) => !data.draft && id !== service.id))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+const related = (await getCollection('work', ({ data }) => !data.draft && data.services.includes(service.id))).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const jsonLd = [
+  {
+    '@type': 'Service',
+    name: d.title,
+    description: d.summary,
+    serviceType: d.title,
+    areaServed: { '@type': 'Country', name: 'India' },
+    provider: { '@id': new URL('/#organization', Astro.site).href, name: site.name },
+    url: new URL(`/services/${service.id}`, Astro.site).href,
+  },
+];
+---
+
+<BaseLayout title={d.seo?.title ?? d.title} description={d.seo?.description ?? d.summary} jsonLd={jsonLd}>
+  <article class="wrap page">
+    <Breadcrumbs items={[{ name: 'Services', href: '/services' }, { name: d.title, href: `/services/${service.id}` }]} />
+    <header class="head">
+      <span class:list={['icon-tile', 'big', { 'icon-tile--mint': d.featured }]}><Icon name={d.icon} size={26} /></span>
+      <h1>{d.title}</h1>
+      <p class="lead">{d.summary}</p>
+      <div class="ctas">
+        <a href={`/?service=${service.id}#contact`} class="btn btn--primary">Discuss your project<Icon name="arrow" size={18} strokeWidth={2} /></a>
+      </div>
+    </header>
+
+    <div class="body">
+      <div class="prose"><Content /></div>
+      <aside class="side">
+        {
+          d.deliverables.length > 0 && (
+            <section class="glass box">
+              <h2 class="eyebrow">What you get</h2>
+              <ul>
+                {d.deliverables.map((x) => (
+                  <li>
+                    <Icon name="check" size={16} strokeWidth={2} class="tick" />
+                    {x}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+        {
+          d.idealFor.length > 0 && (
+            <section class="glass box">
+              <h2 class="eyebrow">Ideal for</h2>
+              <ul>
+                {d.idealFor.map((x) => (
+                  <li>
+                    <Icon name="check" size={16} strokeWidth={2} class="tick" />
+                    {x}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+        {
+          related.length > 0 && (
+            <section class="glass box">
+              <h2 class="eyebrow">Proof</h2>
+              <ul>
+                {related.map((w) => (
+                  <li>
+                    <a href={`/work/${w.id}`}>{w.data.title} — {w.data.client}</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+      </aside>
+    </div>
+  </article>
+
+  <section class="wrap more" aria-labelledby="more-title">
+    <h2 id="more-title" class="eyebrow">More services</h2>
+    <div class="grid">
+      {others.map((s) => <ServiceCard service={s} />)}
+    </div>
+  </section>
+
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: clamp(40px, 7vw, 72px);
+  }
+  .head {
+    max-width: 760px;
+  }
+  .big {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+  }
+  h1 {
+    margin-top: 24px;
+    font-size: clamp(36px, 5vw, 60px);
+    line-height: 1.04;
+  }
+  .lead {
+    margin-top: 18px;
+  }
+  .ctas {
+    margin-top: 28px;
+  }
+  .body {
+    margin-top: 56px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: flex-start;
+  }
+  .prose {
+    flex: 1 1 480px;
+    min-width: 0;
+  }
+  .side {
+    flex: 1 1 320px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .box {
+    padding: 24px;
+  }
+  .box ul {
+    margin-top: 14px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 15px;
+    color: var(--text-2);
+  }
+  .box li {
+    display: flex;
+    gap: 10px;
+  }
+  .box :global(.tick) {
+    flex: none;
+    margin-top: 5px;
+    color: var(--mint);
+  }
+  .more {
+    padding-top: 96px;
+  }
+  .grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: 18px;
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+import '@/styles/global.css';
+import Seo, { type SeoProps } from '@/components/Seo.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+
+type Props = SeoProps;
+const seo = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#07090D" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <Seo {...seo} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="glows" aria-hidden="true">
+      <div class="glow glow--a"></div>
+      <div class="glow glow--b"></div>
+    </div>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  /* Clipping box so the decorative light never widens the page. */
+  .glows {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1400px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .glow {
+    position: absolute;
+  }
+  .glow--a {
+    top: -360px;
+    left: 50%;
+    width: min(1100px, 160vw);
+    height: 900px;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(124, 240, 206, 0.16), rgba(124, 240, 206, 0) 70%);
+  }
+  .glow--b {
+    top: 120px;
+    right: -260px;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(closest-side, rgba(169, 182, 255, 0.12), rgba(169, 182, 255, 0) 70%);
+  }
+  main {
+    position: relative;
+  }
+</style>

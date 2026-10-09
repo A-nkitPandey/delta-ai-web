@@ -1,0 +1,26 @@
+[
+  {
+    "id": "cost",
+    "question": "How much does a project cost?",
+    "answer": "It depends on scope. After a free discovery call we send a fixed-scope proposal with a clear price, so you know the total before any work starts.",
+    "order": 1
+  },
+  {
+    "id": "timeline",
+    "question": "How long does it take?",
+    "answer": "A marketing site or small app usually takes 2–6 weeks. Larger systems are delivered in phases, with something live early and improvements every few weeks.",
+    "order": 2
+  },
+  {
+    "id": "ownership",
+    "question": "Who owns the code?",
+    "answer": "You do. The code, the domain and the cloud accounts are in your name from day one.",
+    "order": 3
+  },
+  {
+    "id": "support",
+    "question": "Do you support the app after launch?",
+    "answer": "Yes. Our care plans cover monitoring, security patches, fixes and new features, with WhatsApp or email support depending on the plan.",
+    "order": 4
+  }
+]

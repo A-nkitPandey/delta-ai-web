@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "delta-ai-web",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+
+  // Public, non-secret settings. Secrets (TURNSTILE_SECRET_KEY,
+  // RESEND_API_KEY, IP_HASH_SALT) are set with `npx wrangler secret put`.
+  "vars": {
+    "CONTACT_TO_EMAIL": "hello@example.com",
+    "CONTACT_FROM_EMAIL": "Delta AI Website <website@example.com>"
+  },
+
+  // Free D1 database that stores contact-form leads.
+  // Run `npx wrangler d1 create delta-leads` and paste the id below.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "delta-leads",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

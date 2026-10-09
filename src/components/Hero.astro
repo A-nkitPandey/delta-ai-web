@@ -1,0 +1,141 @@
+---
+import { site } from '@/lib/site';
+import Icon from './Icon.astro';
+import HeroVisual from './HeroVisual.astro';
+const { hero, announcement, stack } = site;
+---
+
+<section class="hero wrap" aria-labelledby="hero-title">
+  <div class="copy">
+    {
+      announcement && (
+        <a class="pill" href={announcement.href}>
+          <span class="chip chip--mint mono">{announcement.label}</span>
+          {announcement.text}
+        </a>
+      )
+    }
+    <h1 id="hero-title">
+      {hero.before} <span class="accent accent--mint">{hero.accent}</span>{hero.after}
+    </h1>
+    <p class="lead intro">{hero.intro}</p>
+    <div class="ctas">
+      <a href="/#contact" class="btn btn--primary">{hero.primaryCta}<Icon name="arrow" size={18} strokeWidth={2} /></a>
+      <a href="/#work" class="btn btn--ghost">{hero.secondaryCta}</a>
+    </div>
+    <ul class="stack" aria-label="Technologies we use">
+      <li class="faint">BUILT ON</li>
+      {stack.map((s) => <li>{s}</li>)}
+    </ul>
+  </div>
+  <div class="visual">
+    <HeroVisual />
+  </div>
+</section>
+
+<section class="clients" aria-label="Clients">
+  <div class="wrap row">
+    <p class="eyebrow faint">Trusted by growing businesses</p>
+    <ul>
+      {site.clients.map((c) => <li>{c}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 56px;
+    padding-top: clamp(56px, 9vw, 96px);
+    padding-bottom: 72px;
+  }
+  .copy {
+    flex: 1 1 520px;
+    min-width: 0;
+  }
+  .visual {
+    flex: 1 1 400px;
+    min-width: 0;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 36px;
+    padding: 4px 14px 4px 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 13px;
+    color: var(--text-2);
+    text-decoration: none;
+  }
+  .pill:hover {
+    color: var(--text);
+    border-color: var(--edge-2);
+  }
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+  h1 {
+    margin-top: 28px;
+    font-size: clamp(40px, 6vw, 76px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+  .intro {
+    margin-top: 24px;
+    max-width: 560px;
+  }
+  .ctas {
+    margin-top: 36px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .stack {
+    margin-top: 44px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: var(--text-2);
+  }
+  .faint {
+    color: var(--faint);
+  }
+  .clients {
+    border-block: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.015);
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 48px;
+    padding-block: 28px;
+  }
+  .clients ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 44px;
+    list-style: none;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #8790a0;
+  }
+  @media (max-width: 560px) {
+    .ctas .btn {
+      width: 100%;
+    }
+  }
+</style>

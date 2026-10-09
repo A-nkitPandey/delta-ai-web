@@ -1,0 +1,203 @@
+---
+import Icon from './Icon.astro';
+/* Illustrative live-queue card based on the Salon Token product. */
+---
+
+<div class="stage" aria-hidden="true">
+  <div class="card">
+    <div class="top">
+      <div class="who">
+        <span class="badge"><Icon name="scissors" size={18} strokeWidth={2} /></span>
+        <div>
+          <div class="t">Salon Token</div>
+          <div class="mono">khanpopular.online</div>
+        </div>
+      </div>
+      <span class="live"><span class="dot"></span>Live queue</span>
+    </div>
+    <div class="panel">
+      <div class="mono label">NOW SERVING</div>
+      <div class="serving"><span class="num">#14</span><span class="muted small">Your token: <b>#17</b></span></div>
+      <div class="track"><div class="fill"></div></div>
+      <div class="row small"><span class="muted">Approx. wait</span><span>~ 25 min</span></div>
+    </div>
+    <div class="mini">
+      <div class="tile"><div class="small faint">Next up</div><b>#15 · #16</b></div>
+      <div class="tile"><div class="small faint">Arrive by</div><b>11:40 AM</b></div>
+    </div>
+    <div class="float float--a"><Icon name="shield" size={18} strokeWidth={2} class="c-mint" />CSP · HSTS · rate-limited</div>
+    <div class="float float--b"><Icon name="spark" size={18} strokeWidth={2} class="c-peri" />AI assistant · replying on WhatsApp</div>
+  </div>
+</div>
+
+<style>
+  .stage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 28px 0;
+  }
+  .card {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    padding: 22px;
+    border-radius: 28px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 40px 120px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
+  .top,
+  .who,
+  .row,
+  .serving {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .top,
+  .row {
+    justify-content: space-between;
+  }
+  .badge {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    color: var(--peri);
+    background: rgba(169, 182, 255, 0.15);
+    border: 1px solid rgba(169, 182, 255, 0.3);
+  }
+  .t {
+    font-weight: 600;
+    font-size: 15px;
+  }
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--faint);
+  }
+  .label {
+    letter-spacing: 0.08em;
+  }
+  .live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(124, 240, 206, 0.12);
+    color: var(--mint);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--mint);
+    box-shadow: 0 0 10px var(--mint);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    50% {
+      opacity: 0.35;
+    }
+  }
+  .panel {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 18px;
+    background: rgba(7, 9, 13, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .serving {
+    align-items: baseline;
+    gap: 12px;
+    margin-top: 6px;
+  }
+  .num {
+    font-size: 56px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+  }
+  .small {
+    font-size: 13px;
+  }
+  .faint {
+    color: var(--faint);
+  }
+  b {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .track {
+    margin: 14px 0 10px;
+    height: 8px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.07);
+    overflow: hidden;
+  }
+  .fill {
+    width: 62%;
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--peri), var(--mint));
+  }
+  .mini {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .tile {
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .float {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: rgba(18, 22, 30, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .float--a {
+    left: -28px;
+    bottom: -22px;
+  }
+  .float--b {
+    right: -20px;
+    top: -22px;
+  }
+  .float :global(.c-mint) {
+    color: var(--mint);
+  }
+  .float :global(.c-peri) {
+    color: var(--peri);
+  }
+  @media (max-width: 560px) {
+    .float--a {
+      left: 8px;
+    }
+    .float--b {
+      right: 8px;
+      white-space: normal;
+      max-width: 75%;
+    }
+  }
+</style>

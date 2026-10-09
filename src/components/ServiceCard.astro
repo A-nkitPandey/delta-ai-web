@@ -1,0 +1,96 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+
+interface Props {
+  service: CollectionEntry<'services'>;
+  headingLevel?: 'h2' | 'h3';
+}
+const { service, headingLevel: H = 'h3' } = Astro.props;
+const { title, summary, icon, tags, featured } = service.data;
+---
+
+<article class:list={['glass', 'card', { 'glass--tint': featured }]}>
+  <span class:list={['icon-tile', { 'icon-tile--mint': featured }]}><Icon name={icon} /></span>
+  <H class="title">
+    <a href={`/services/${service.id}`} class="stretched">{title}</a>
+  </H>
+  <p class="muted summary">{summary}</p>
+  {
+    tags.length > 0 && (
+      <ul class="chips">
+        {tags.map((t) => (
+          <li class="chip">{t}</li>
+        ))}
+      </ul>
+    )
+  }
+  <span class="more" aria-hidden="true">Learn more <Icon name="arrow" size={16} strokeWidth={2} /></span>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 30px;
+    transition: transform 0.2s ease-out, border-color 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--edge-2);
+  }
+  .card:focus-within {
+    border-color: var(--mint);
+  }
+  .title {
+    margin-top: 22px;
+    font-size: 21px;
+    letter-spacing: -0.015em;
+  }
+  .stretched {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .stretched::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .stretched:focus-visible {
+    outline: none;
+  }
+  .summary {
+    margin-top: 10px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .chips {
+    margin-top: 20px;
+  }
+  .more {
+    margin-top: auto;
+    padding-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--mint);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .card:hover .more,
+  .card:focus-within .more {
+    opacity: 1;
+    transform: none;
+  }
+  @media (hover: none) {
+    .more {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

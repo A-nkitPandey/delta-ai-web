@@ -1,0 +1,144 @@
+---
+import { getCollection } from 'astro:content';
+import { site } from '@/lib/site';
+import Icon from './Icon.astro';
+
+const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const year = new Date().getFullYear();
+const socials = [
+  { href: site.social.linkedin, label: 'LinkedIn', icon: 'linkedin' },
+  { href: site.social.github, label: 'GitHub', icon: 'github' },
+].filter((s) => s.href);
+---
+
+<footer class="footer">
+  <div class="wrap grid">
+    <div class="brand">
+      <div class="name">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 L21.5 20 H2.5 Z"></path></svg>
+        {site.name}
+      </div>
+      <p class="muted">{site.tagline}.</p>
+      {
+        socials.length > 0 && (
+          <ul class="socials">
+            {socials.map((s) => (
+              <li>
+                <a href={s.href} rel="noopener me" target="_blank" aria-label={s.label}>
+                  <Icon name={s.icon} size={18} strokeWidth={1.8} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+    <nav aria-label="Services">
+      <h2 class="col-title">Services</h2>
+      <ul>
+        {
+          services.map((s) => (
+            <li>
+              <a href={`/services/${s.id}`}>{s.data.title}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <nav aria-label="Company">
+      <h2 class="col-title">Company</h2>
+      <ul>
+        <li><a href="/#work">Work</a></li>
+        <li><a href="/#process">Process</a></li>
+        <li><a href="/#faq">FAQ</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="Legal">
+      <h2 class="col-title">Legal</h2>
+      <ul>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/terms">Terms</a></li>
+        <li><a href="/#security">Security</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="wrap base">
+    <span>© {year} {site.legalName} · {site.contact.city}</span>
+    <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    margin-top: 40px;
+    font-size: 14px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 32px;
+    padding-block: 56px 32px;
+  }
+  .brand {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--mint);
+  }
+  .col-title {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 8px;
+  }
+  ul {
+    list-style: none;
+  }
+  nav a,
+  .base a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    color: var(--text-2);
+    text-decoration: none;
+  }
+  nav a:hover,
+  .base a:hover {
+    color: var(--text);
+  }
+  .socials {
+    display: flex;
+    gap: 8px;
+  }
+  .socials a {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    border: 1px solid var(--edge);
+    color: var(--text-2);
+  }
+  .base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    padding-block: 20px 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--faint);
+  }
+</style>
