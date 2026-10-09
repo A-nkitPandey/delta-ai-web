@@ -12,13 +12,13 @@
     "CONTACT_FROM_EMAIL": "Delta AI Website <website@example.com>"
   },
 
-  // Free D1 database that stores contact-form leads.
-  // Run `npx wrangler d1 create delta-leads` and paste the id below.
+  // Free D1 database that stores contact-form leads (created in the
+  // Cloudflare dashboard; table created from migrations/0001_create_leads.sql).
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "delta-leads",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "0f292832-fd0d-45f7-8c72-856abc8956df",
       "migrations_dir": "migrations"
     }
   ]
