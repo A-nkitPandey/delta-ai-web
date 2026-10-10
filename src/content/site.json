@@ -16,20 +16,41 @@
     "primaryCta": "Book a discovery call",
     "secondaryCta": "See our work"
   },
-  "stack": [".NET 10 LTS", "Astro", "Next.js", "PostgreSQL", "Cloudflare", "UPI · Razorpay · Paytm"],
-  "clients": ["Khan Popular Salon"],
+  "stack": [
+    ".NET 10 LTS",
+    "Astro",
+    "Next.js",
+    "PostgreSQL",
+    "Cloudflare",
+    "UPI · Razorpay · Paytm"
+  ],
+  "clients": [
+    "Khan Popular Salon"
+  ],
   "contact": {
     "email": "info@deltaaiinnovation.in",
     "phone": "",
     "whatsapp": "",
-    "city": "India",
+    "city": "New Delhi, India",
     "replyPromise": "You’ll get a reply within one business day with next steps and a rough estimate."
   },
   "social": {
     "linkedin": "",
-    "github": "https://github.com/A-nkitPandey",
+    "github": "",
     "x": "",
     "instagram": ""
   },
-  "foundingYear": 2026
+  "foundingYear": 2026,
+  "team": {
+    "headline": "One team across AI, web, payments and cloud",
+    "intro": "Delta AI Innovation is a team of engineers and designers who have built and modernised business software on .NET, React and SQL Server — HR systems, payment gateways and live customer-facing apps. We started Delta AI to bring practical, secure AI to Indian small businesses.",
+    "disciplines": [
+      "AI & automation",
+      "Full-stack engineering",
+      "Payments & integrations",
+      "UI/UX design",
+      "Cloud & security",
+      "Support & care"
+    ]
+  }
 }

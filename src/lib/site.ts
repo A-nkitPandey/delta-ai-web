@@ -36,6 +36,11 @@ const SiteSchema = z.object({
     instagram: optionalUrl,
   }),
   foundingYear: z.number().int(),
+  team: z.object({
+    headline: z.string(),
+    intro: z.string(),
+    disciplines: z.array(z.string()),
+  }),
 });
 
 export const site = SiteSchema.parse(raw);

@@ -35,6 +35,7 @@ const organization = {
   email: site.contact.email,
   foundingDate: String(site.foundingYear),
   areaServed: 'IN',
+  address: { '@type': 'PostalAddress', addressLocality: 'New Delhi', addressCountry: 'IN' },
   ...(sameAs.length ? { sameAs } : {}),
 };
 const graph = [organization, ...jsonLd];

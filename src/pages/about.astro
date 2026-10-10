@@ -1,0 +1,183 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import ContactSection from '@/components/ContactSection.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/lib/site';
+
+const team = site.team;
+
+const facts = [
+  { label: 'Founded', value: String(site.foundingYear) },
+  { label: 'Based in', value: site.contact.city },
+  { label: 'Stage', value: 'Bootstrapped' },
+  { label: 'Focus', value: 'AI agents & business software' },
+];
+
+const values = [
+  { title: 'Useful AI, not hype', text: 'We start with one painful task, measure it, and ship an assistant that saves real hours.' },
+  { title: 'Secure by default', text: 'Every project ships with hardened headers, secrets in a vault and abuse protection on day one.' },
+  { title: 'Built for India', text: 'Light pages for every phone and network, UPI-ready payments, and WhatsApp where customers already are.' },
+  { title: 'You own it', text: 'Code, domain and cloud accounts are in your name. No lock-in, ever.' },
+];
+
+const jsonLd = [
+  {
+    '@type': 'AboutPage',
+    name: `About ${site.name}`,
+    url: new URL('/about', Astro.site).href,
+    about: { '@id': new URL('/#organization', Astro.site).href },
+  },
+];
+---
+
+<BaseLayout title="About" description={`${site.legalName} is a ${site.contact.city} startup building AI agents, web apps and secure business software for Indian small businesses.`} jsonLd={jsonLd}>
+  <div class="wrap page">
+    <Breadcrumbs items={[{ name: 'About', href: '/about' }]} />
+    <SectionHeading as="h1" eyebrow="About us" before="A small team building" accent="practical AI" after=" for Indian businesses." />
+    <p class="lead intro">
+      {site.legalName} designs, builds and supports AI-powered software for small and growing businesses — assistants that answer customers on WhatsApp, apps that
+      replace spreadsheets, and payment flows that just work. We are based in {site.contact.city} and work with clients across India.
+    </p>
+
+    <dl class="facts">
+      {
+        facts.map((x) => (
+          <div class="glass fact">
+            <dt>{x.label}</dt>
+            <dd>{x.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <section class="team glass" aria-labelledby="team-title">
+      <div class="mark" aria-hidden="true">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 L21.5 20 H2.5 Z"></path><path d="M12 10 L16 17 H8 Z"></path></svg>
+      </div>
+      <div class="who">
+        <p class="eyebrow">Our team</p>
+        <h2 id="team-title">{team.headline}</h2>
+        <p class="muted bio">{team.intro}</p>
+        <ul class="chips">
+          {team.disciplines.map((d) => <li class="chip">{d}</li>)}
+        </ul>
+        {
+          site.social.linkedin && (
+            <a href={site.social.linkedin} class="btn btn--ghost btn--sm follow" rel="noopener" target="_blank">
+              <Icon name="linkedin" size={16} strokeWidth={1.8} />
+              Follow {site.legalName} on LinkedIn
+            </a>
+          )
+        }
+      </div>
+    </section>
+
+    <section class="values" aria-labelledby="values-title">
+      <h2 id="values-title" class="eyebrow">What we believe</h2>
+      <ul class="grid">
+        {
+          values.map((v) => (
+            <li class="glass item">
+              <h3>{v.title}</h3>
+              <p class="muted">{v.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: clamp(40px, 7vw, 72px);
+  }
+  .intro {
+    margin-top: 24px;
+    max-width: 720px;
+  }
+  .facts {
+    margin: 40px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: 12px;
+  }
+  .fact {
+    padding: 20px;
+    border-radius: var(--r-md);
+  }
+  dt {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  dd {
+    margin: 6px 0 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .team {
+    margin-top: 48px;
+    padding: clamp(24px, 4vw, 40px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: flex-start;
+    background: linear-gradient(135deg, rgba(124, 240, 206, 0.08), rgba(255, 255, 255, 0.02) 60%);
+  }
+  .mark {
+    flex: none;
+    width: 96px;
+    height: 96px;
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mint);
+    background: linear-gradient(160deg, rgba(124, 240, 206, 0.22), rgba(124, 240, 206, 0.04));
+    border: 1px solid rgba(124, 240, 206, 0.35);
+  }
+  .who {
+    flex: 1 1 320px;
+    min-width: 0;
+  }
+  .who h2 {
+    margin-top: 8px;
+    font-size: clamp(26px, 3vw, 34px);
+  }
+  .follow {
+    margin-top: 20px;
+  }
+  .bio {
+    margin: 16px 0 20px;
+    max-width: 640px;
+    line-height: 1.7;
+  }
+  .values {
+    margin-top: 72px;
+  }
+  .grid {
+    margin-top: 20px;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: 14px;
+  }
+  .item {
+    padding: 24px;
+  }
+  h3 {
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .item p {
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+</style>
