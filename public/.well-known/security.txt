@@ -1,4 +1,4 @@
-Contact: mailto:hello@deltaaiinnovation.in
+Contact: mailto:info@deltaaiinnovation.in
 Expires: 2027-10-09T00:00:00.000Z
 Preferred-Languages: en, hi
 Policy: https://deltaaiinnovation.in/terms

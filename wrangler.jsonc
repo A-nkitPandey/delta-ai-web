@@ -17,7 +17,7 @@
   // Public, non-secret settings. Secrets (TURNSTILE_SECRET_KEY,
   // RESEND_API_KEY, IP_HASH_SALT) are set with `npx wrangler secret put`.
   "vars": {
-    "CONTACT_TO_EMAIL": "hello@deltaaiinnovation.in",
+    "CONTACT_TO_EMAIL": "info@deltaaiinnovation.in",
     "CONTACT_FROM_EMAIL": "Delta AI Website <website@deltaaiinnovation.in>"
   },
 

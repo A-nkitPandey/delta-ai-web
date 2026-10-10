@@ -3,7 +3,7 @@
 // Runtime types generated with workerd@1.20261006.1 2026-10-01
 interface __BaseEnv_Env {
 	DB: D1Database;
-	CONTACT_TO_EMAIL: "hello@deltaaiinnovation.in";
+	CONTACT_TO_EMAIL: "info@deltaaiinnovation.in";
 	CONTACT_FROM_EMAIL: "Delta AI Website <website@deltaaiinnovation.in>";
 	TURNSTILE_SECRET_KEY: string;
 	RESEND_API_KEY: string;
