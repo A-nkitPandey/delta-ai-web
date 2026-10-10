@@ -7,6 +7,13 @@
   // Keep the free *.workers.dev link switched on (useful before and after a custom domain).
   "workers_dev": true,
 
+  // Serve the site on your own domain. Cloudflare creates the DNS records
+  // and SSL certificate automatically on deploy.
+  "routes": [
+    { "pattern": "deltaaiinnovation.in", "custom_domain": true },
+    { "pattern": "www.deltaaiinnovation.in", "custom_domain": true }
+  ],
+
   // Public, non-secret settings. Secrets (TURNSTILE_SECRET_KEY,
   // RESEND_API_KEY, IP_HASH_SALT) are set with `npx wrangler secret put`.
   "vars": {
