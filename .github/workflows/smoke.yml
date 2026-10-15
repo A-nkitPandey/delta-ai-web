@@ -28,5 +28,10 @@ jobs:
           Q: ${{ inputs.question }}
         run: |
           body=$(jq -n --arg q "$Q" '{messages:[{role:"user",content:$q}]}')
-          curl -s -w '\nHTTP %{http_code}\n' -X POST https://deltaaiinnovation.in/api/chat \
-            -H 'Origin: https://deltaaiinnovation.in' -H 'Content-Type: application/json' -d "$body"
+          out=$(curl -s -w '\n%{http_code}' -X POST https://deltaaiinnovation.in/api/chat \
+            -H 'Origin: https://deltaaiinnovation.in' -H 'Content-Type: application/json' -d "$body")
+          code=$(echo "$out" | tail -n1); json=$(echo "$out" | sed '$d')
+          echo "HTTP $code"; echo "$json"
+          text=$(echo "$json" | jq -r '.reply // .message' | tr '\n' ' ')
+          echo "::notice title=Chat HTTP $code::$text"
+          [ "$code" = "200" ]
