@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import WorkCard from '@/components/WorkCard.astro';
+import ContactSection from '@/components/ContactSection.astro';
+
+const projects = (await getCollection('work', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Our work" description="Products and client projects by Delta AI: QR restaurant ordering, live AI translation for support, lead-management CRM, HR platforms and live salon queues.">
+  <div class="wrap page">
+    <Breadcrumbs items={[{ name: 'Work', href: '/work' }]} />
+    <SectionHeading as="h1" eyebrow="Our work" before="Products and projects we’ve" accent="actually built" after="." />
+    <p class="lead intro">From a live queue running at a busy Delhi salon to AI translation for support teams — here’s what we’ve shipped and what we’re building.</p>
+    <div class="grid">
+      {projects.map((p) => <WorkCard project={p} />)}
+    </div>
+  </div>
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: clamp(40px, 7vw, 72px);
+  }
+  .intro {
+    margin-top: 24px;
+    max-width: 700px;
+  }
+  .grid {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 16px;
+  }
+</style>

@@ -33,7 +33,7 @@ const jsonLd = [
 
 <BaseLayout title={d.seo?.title ?? `${d.title} case study`} description={d.seo?.description ?? d.summary} type="article" jsonLd={jsonLd}>
   <article class="wrap page">
-    <Breadcrumbs items={[{ name: 'Work', href: '/#work' }, { name: d.title, href: `/work/${project.id}` }]} />
+    <Breadcrumbs items={[{ name: 'Work', href: '/work' }, { name: d.title, href: `/work/${project.id}` }]} />
     <header class="head">
       <ul class="chips">
         <li class="chip">{d.industry}</li>

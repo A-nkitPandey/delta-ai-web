@@ -104,6 +104,8 @@ content:
       primary: title
     fields:
       - { name: title, label: Project name, type: string, required: true }
+      - { name: status, label: Status badge (Live, Product, In development, Client project), type: string }
+      - { name: icon, label: Card icon (apps, chat, systems, store, scissors…), type: string }
       - { name: headline, label: Headline, type: string, required: true }
       - { name: accentWord, label: Accent words (italic, end of headline), type: string }
       - { name: client, label: Client, type: string, required: true }

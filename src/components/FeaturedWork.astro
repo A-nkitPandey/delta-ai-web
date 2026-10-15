@@ -2,8 +2,11 @@
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
+import WorkCard from './WorkCard.astro';
 
-const projects = (await getCollection('work', ({ data }) => !data.draft && data.featured)).sort((a, b) => a.data.order - b.data.order);
+const all = (await getCollection('work', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+const projects = all.filter((p) => p.data.featured);
+const more = all.filter((p) => !p.data.featured);
 ---
 
 {
@@ -83,11 +86,50 @@ const projects = (await getCollection('work', ({ data }) => !data.draft && data.
           )}
         </article>
       ))}
+      {more.length > 0 && (
+        <div class="more-work">
+          <div class="more-head">
+            <h3 class="eyebrow">More of our work</h3>
+            <a href="/work" class="all">
+              See all projects <Icon name="arrow" size={16} strokeWidth={2} />
+            </a>
+          </div>
+          <div class="grid">
+            {more.map((p) => (
+              <WorkCard project={p} />
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   )
 }
 
 <style>
+  .more-work {
+    margin-top: 48px;
+  }
+  .more-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .all {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .more-work .grid {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: 16px;
+  }
   .feature {
     margin-top: 28px;
     display: flex;

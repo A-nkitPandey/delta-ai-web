@@ -1,0 +1,110 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+interface Props {
+  project: CollectionEntry<'work'>;
+}
+const { project } = Astro.props;
+const d = project.data;
+const live = d.status?.toLowerCase() === 'live';
+---
+
+<a href={`/work/${project.id}`} class="glass card">
+  <div class="top">
+    <span class="icon-tile"><Icon name={d.icon ?? 'apps'} size={22} /></span>
+    {
+      d.status && (
+        <span class:list={['status', { live }]}>
+          {live && <span class="dot" />}
+          {d.status}
+        </span>
+      )
+    }
+  </div>
+  <p class="industry">{d.industry}</p>
+  <h3>{d.title}</h3>
+  <p class="muted sum">{d.summary}</p>
+  <ul class="chips">
+    {d.tags.slice(0, 3).map((t) => <li class="chip">{t}</li>)}
+  </ul>
+  <span class="more">Read the case study <Icon name="arrow" size={16} strokeWidth={2} /></span>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 26px;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 0.2s,
+      transform 0.2s;
+  }
+  .card:hover {
+    border-color: rgba(var(--mint-rgb), 0.35);
+    transform: translateY(-2px);
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--peri);
+    background: rgba(var(--peri-rgb), 0.12);
+  }
+  .status.live {
+    color: var(--mint);
+    background: rgba(var(--mint-rgb), 0.12);
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--mint);
+    box-shadow: 0 0 8px var(--mint);
+  }
+  .industry {
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  h3 {
+    font-size: 21px;
+    letter-spacing: -0.01em;
+  }
+  .sum {
+    font-size: 15px;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .chips {
+    margin-top: 4px;
+  }
+  .more {
+    margin-top: auto;
+    padding-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--mint);
+    font-size: 14px;
+    font-weight: 500;
+  }
+</style>

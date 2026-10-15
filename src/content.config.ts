@@ -61,6 +61,10 @@ const work = defineCollection({
     order: z.number().default(100),
     featured: z.boolean().default(false),
     year: z.number().int().optional(),
+    /** Shown as a badge, e.g. "Live", "Product", "In development", "Client project". */
+    status: z.string().optional(),
+    /** Icon for the project card (any name from Icon.astro). */
+    icon: z.string().optional(),
     draft: z.boolean().default(false),
     seo,
   }),

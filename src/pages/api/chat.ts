@@ -74,9 +74,11 @@ async function knowledge() {
   for (const i of industries.sort(byOrder)) {
     lines.push(`- ${i.data.title} (${SITE_URL}/industries/${i.id}): ${i.data.summary} We build: ${i.data.solutions.map((x) => x.title).join(', ')}.`);
   }
-  lines.push('CASE STUDIES (the only real client work — never invent others):');
+  lines.push(`OUR WORK (${SITE_URL}/work — the only projects that exist; never invent others or name hidden clients):`);
   for (const w of work.sort(byOrder)) {
-    lines.push(`- ${w.data.title} for ${w.data.client}${w.data.url ? ` (live at ${w.data.url})` : ''}: ${w.data.summary}`);
+    lines.push(
+      `- ${w.data.title} [${w.data.status ?? 'project'}; ${w.data.client}] (${SITE_URL}/work/${w.id})${w.data.url ? ` live at ${w.data.url}` : ''}: ${w.data.summary}`,
+    );
   }
   lines.push('SUPPORT PLANS (prices are not published; they are quoted after a free discovery call):');
   for (const p of plans.sort(byOrder)) {

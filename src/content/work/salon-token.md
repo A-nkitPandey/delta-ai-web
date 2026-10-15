@@ -12,6 +12,8 @@ services: [booking-queue-saas, web-mobile-apps]
 order: 1
 featured: true
 year: 2026
+status: Live
+icon: scissors
 seo:
   title: Salon Token case study — live queue for Khan Popular Salon
   description: How Delta AI built a mobile-first, real-time token queue for Khan Popular Salon so customers arrive near their turn instead of waiting in line.
