@@ -1,0 +1,2 @@
+# Search engines and bots often ask for /sitemap.xml; the real file is sitemap-index.xml.
+/sitemap.xml /sitemap-index.xml 301
