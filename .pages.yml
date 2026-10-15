@@ -152,3 +152,24 @@ content:
       - { name: question, label: Question, type: string }
       - { name: answer, label: Answer, type: text }
       - { name: order, label: Order, type: number }
+  - name: jobs
+    label: Careers (job openings)
+    type: file
+    path: src/content/jobs.json
+    format: json
+    list: true
+    fields:
+      - { name: id, label: ID (lowercase-with-dashes), type: string, required: true }
+      - { name: title, label: Job title, type: string, required: true }
+      - name: type
+        label: Type
+        type: select
+        options: { values: [Full-time, Part-time, Internship, Contract] }
+      - { name: location, label: Location, type: string }
+      - { name: remote, label: Fully remote?, type: boolean }
+      - { name: summary, label: One-line summary, type: text }
+      - { name: responsibilities, label: What you'll do, type: string, list: true }
+      - { name: requirements, label: What we're looking for, type: string, list: true }
+      - { name: open, label: Show on site (open), type: boolean }
+      - { name: datePosted, label: Date posted (YYYY-MM-DD), type: string }
+      - { name: order, label: Order, type: number }

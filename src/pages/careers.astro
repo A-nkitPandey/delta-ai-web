@@ -1,0 +1,495 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/lib/site';
+
+const jobs = (await getCollection('jobs', ({ data }) => data.open)).sort((a, b) => a.data.order - b.data.order);
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+const experience = ['Student / fresher', 'Under 1 year', '1–3 years', '3–5 years', '5+ years'];
+
+const perks = [
+  { icon: 'apps', title: 'Real products, real users', text: 'Your work goes live for real businesses — not demo projects that sit in a folder.' },
+  { icon: 'ai', title: 'Practical AI, hands-on', text: 'Build assistants and automations with modern AI tools and see what actually works.' },
+  { icon: 'spark', title: 'Ownership from day one', text: 'Small team, so you own features end to end and your ideas get heard.' },
+  { icon: 'check', title: 'Credit for your work', text: 'Ship things you can proudly show in your portfolio and talk about in interviews.' },
+] as const;
+
+const employmentType = { 'Full-time': 'FULL_TIME', 'Part-time': 'PART_TIME', Internship: 'INTERN', Contract: 'CONTRACTOR' } as const;
+const org = new URL('/#organization', Astro.site).href;
+const list = (items: string[]) => `<ul>${items.map((i) => `<li>${i}</li>`).join('')}</ul>`;
+
+const jsonLd = jobs.map(({ data: j }) => ({
+  '@type': 'JobPosting',
+  title: j.title,
+  description: `<p>${j.summary}</p><p><strong>What you’ll do</strong></p>${list(j.responsibilities)}<p><strong>What we’re looking for</strong></p>${list(j.requirements)}`,
+  datePosted: j.datePosted,
+  employmentType: employmentType[j.type],
+  directApply: true,
+  hiringOrganization: { '@type': 'Organization', '@id': org, name: site.legalName, sameAs: new URL('/', Astro.site).href, logo: new URL('/logo.png', Astro.site).href },
+  ...(j.remote
+    ? { jobLocationType: 'TELECOMMUTE', applicantLocationRequirements: { '@type': 'Country', name: 'India' } }
+    : { jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: 'New Delhi', addressRegion: 'Delhi', addressCountry: 'IN' } } }),
+}));
+---
+
+<BaseLayout
+  title="Careers"
+  description={`Join ${site.legalName} in ${site.contact.city}. Open roles and internships in full-stack development, AI automation and UI/UX design.`}
+  jsonLd={jsonLd}
+>
+  <div class="wrap page">
+    <Breadcrumbs items={[{ name: 'Careers', href: '/careers' }]} />
+    <SectionHeading as="h1" eyebrow="Careers" before="Build software that" accent="small businesses" after=" actually use." />
+    <p class="lead intro">
+      We’re a growing team in {site.contact.city} building AI assistants, apps and payment systems for businesses across India. If you like shipping real things and
+      learning fast, we’d love to hear from you.
+    </p>
+
+    <ul class="perks">
+      {
+        perks.map((p) => (
+          <li class="glass perk">
+            <span class="ic">
+              <Icon name={p.icon} size={20} strokeWidth={1.8} />
+            </span>
+            <h2>{p.title}</h2>
+            <p class="muted">{p.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <section class="roles" aria-labelledby="roles-title">
+      <h2 id="roles-title" class="eyebrow">Open roles · {jobs.length}</h2>
+      {
+        jobs.length === 0 && (
+          <p class="glass empty muted">No open roles right now — but we’re always happy to meet good people. Send a general application below.</p>
+        )
+      }
+      <ul class="list">
+        {
+          jobs.map(({ id, data: j }) => (
+            <li class="glass role">
+              <div class="head">
+                <div>
+                  <h3>{j.title}</h3>
+                  <ul class="chips">
+                    <li class="chip">{j.type}</li>
+                    <li class="chip">{j.location}</li>
+                  </ul>
+                </div>
+                <a href={`/careers?role=${id}#apply`} class="btn btn--primary btn--sm apply" data-role={id}>
+                  Apply <Icon name="arrow" size={16} strokeWidth={2} />
+                </a>
+              </div>
+              <p class="muted sum">{j.summary}</p>
+              <details>
+                <summary>
+                  Role details <Icon name="chevron" size={16} strokeWidth={2} />
+                </summary>
+                <div class="cols">
+                  <div>
+                    <h4>What you’ll do</h4>
+                    <ul class="ticks">{j.responsibilities.map((r) => <li>{r}</li>)}</ul>
+                  </div>
+                  <div>
+                    <h4>What we’re looking for</h4>
+                    <ul class="ticks">{j.requirements.map((r) => <li>{r}</li>)}</ul>
+                  </div>
+                </div>
+              </details>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section id="apply" class="box" aria-labelledby="apply-title">
+      <div class="intro2">
+        <h2 id="apply-title" class="h2">Apply <span class="accent accent--mint">in two minutes.</span></h2>
+        <p class="lead">No cover letter needed. Share a link to your work and a few lines about you — we read every application.</p>
+        <p class="muted small">
+          Prefer email? Write to <a href={`mailto:${site.contact.email}?subject=Job%20application`}>{site.contact.email}</a> with your resume.
+        </p>
+        <p class="muted small">We never charge a fee to apply or to join.</p>
+      </div>
+
+      <form id="apply-form" class="form" action="/api/contact" method="post" novalidate data-sitekey={siteKey}>
+        <div class="field">
+          <label for="a-name">Full name</label>
+          <input id="a-name" name="name" type="text" autocomplete="name" required maxlength="100" />
+        </div>
+        <div class="field">
+          <label for="a-email">Email</label>
+          <input id="a-email" name="email" type="email" autocomplete="email" required maxlength="200" />
+        </div>
+        <div class="field">
+          <label for="a-role">Role</label>
+          <select id="a-role" name="service" required>
+            {jobs.map(({ id, data }) => <option value={`careers-${id}`}>{data.title}</option>)}
+            <option value="careers-general">General application</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="a-exp">Experience</label>
+          <select id="a-exp" name="budget" required>
+            {experience.map((x) => <option value={x}>{x}</option>)}
+          </select>
+        </div>
+        <div class="field full">
+          <label for="a-link">LinkedIn, portfolio, GitHub or resume link</label>
+          <input id="a-link" name="company" type="url" inputmode="url" required maxlength="300" placeholder="https://" pattern="https://.+" />
+          <span class="hint">Tip: upload your resume to Google Drive and paste a “view” link.</span>
+        </div>
+        <div class="field full">
+          <label for="a-msg">Why you’d like to join</label>
+          <textarea id="a-msg" name="message" rows="5" required minlength="10" maxlength="4000"></textarea>
+        </div>
+
+        <div class="hp" aria-hidden="true">
+          <label for="a-website">Website</label>
+          <input id="a-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        {siteKey && <div class="full turnstile" id="a-ts" />}
+
+        <button type="submit" class="btn btn--primary btn--block full" id="a-submit">Send application</button>
+        <p class="full status" id="a-status" role="status" aria-live="polite"></p>
+        <p class="full fine">We only use your details to review your application. See our <a href="/privacy">privacy policy</a>.</p>
+        <noscript><p class="full fine">This form needs JavaScript. You can also email us at <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.</p></noscript>
+      </form>
+    </section>
+  </div>
+</BaseLayout>
+
+{siteKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer />}
+
+<script>
+  type TurnstileApi = {
+    render: (el: HTMLElement, opts: Record<string, unknown>) => string;
+    reset: (id?: string) => void;
+    getResponse: (id?: string) => string | undefined;
+  };
+  const ts = () => (window as unknown as { turnstile?: TurnstileApi }).turnstile;
+
+  const form = document.getElementById('apply-form') as HTMLFormElement | null;
+  if (form) {
+    const status = document.getElementById('a-status') as HTMLElement;
+    const submit = document.getElementById('a-submit') as HTMLButtonElement;
+    const role = document.getElementById('a-role') as HTMLSelectElement | null;
+    const widgetEl = document.getElementById('a-ts') as HTMLElement | null;
+    const useTurnstile = !!form.dataset.sitekey;
+    const openedAt = Date.now();
+    let widgetId: string | undefined;
+
+    const pick = (id: string | null) => {
+      const v = `careers-${id}`;
+      if (id && role && Array.from(role.options).some((o) => o.value === v)) role.value = v;
+    };
+    pick(new URLSearchParams(location.search).get('role'));
+
+    // "Apply" buttons choose the role and jump to the form without reloading.
+    document.querySelectorAll<HTMLAnchorElement>('a[data-role]').forEach((a) =>
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        pick(a.dataset.role ?? null);
+        history.replaceState(null, '', a.href);
+        document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        (document.getElementById('a-name') as HTMLInputElement).focus({ preventScroll: true });
+      }),
+    );
+
+    if (useTurnstile && widgetEl) {
+      const wait = setInterval(() => {
+        const t = ts();
+        if (t) {
+          clearInterval(wait);
+          widgetId = t.render(widgetEl, { sitekey: form.dataset.sitekey, theme: 'dark', appearance: 'interaction-only', action: 'contact' });
+        }
+      }, 150);
+      setTimeout(() => clearInterval(wait), 20000);
+    }
+
+    const setStatus = (msg: string, kind: 'ok' | 'err' | '') => {
+      status.textContent = msg;
+      status.dataset.kind = kind;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setStatus('', '');
+      if (!form.checkValidity()) {
+        form.querySelector<HTMLElement>(':invalid')?.focus();
+        setStatus('Please add your name, a valid email, an https:// link to your work and a short note.', 'err');
+        return;
+      }
+      const token = useTurnstile ? ts()?.getResponse(widgetId) : '';
+      if (useTurnstile && !token) {
+        setStatus('Just a second — completing the spam check. Please try again.', 'err');
+        return;
+      }
+      const data = Object.fromEntries(new FormData(form).entries());
+      submit.disabled = true;
+      submit.textContent = 'Sending…';
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...data, token, t: Date.now() - openedAt, page: location.pathname }),
+        });
+        const body = (await res.json().catch(() => ({}))) as { message?: string };
+        if (res.ok) {
+          form.reset();
+          setStatus(body.message ?? 'Thanks for applying!', 'ok');
+        } else {
+          setStatus(body.message ?? 'Something went wrong. Please email us instead.', 'err');
+        }
+      } catch {
+        setStatus('Network error. Please check your connection and try again.', 'err');
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'Send application';
+        if (useTurnstile) ts()?.reset(widgetId);
+      }
+    });
+  }
+</script>
+
+<style>
+  .page {
+    padding-top: clamp(40px, 7vw, 72px);
+    padding-bottom: clamp(56px, 8vw, 96px);
+  }
+  .intro {
+    margin-top: 24px;
+    max-width: 720px;
+  }
+  .perks {
+    margin-top: 40px;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+    gap: 14px;
+  }
+  .perk {
+    padding: 24px;
+  }
+  .perk h2 {
+    margin-top: 16px;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .perk p {
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .ic {
+    display: inline-flex;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    color: var(--mint);
+    background: rgba(124, 240, 206, 0.1);
+    border: 1px solid rgba(124, 240, 206, 0.28);
+  }
+  .roles {
+    margin-top: 72px;
+  }
+  .empty {
+    margin-top: 20px;
+    padding: 24px;
+  }
+  .list {
+    margin-top: 20px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .role {
+    padding: clamp(20px, 3vw, 28px);
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .head h3 {
+    font-size: clamp(19px, 2.2vw, 22px);
+    letter-spacing: -0.01em;
+  }
+  .chips {
+    margin-top: 10px;
+  }
+  .apply {
+    flex: none;
+  }
+  .sum {
+    margin-top: 14px;
+    line-height: 1.6;
+  }
+  details {
+    margin-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 12px;
+  }
+  summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    cursor: pointer;
+    list-style: none;
+    color: var(--mint);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary :global(svg) {
+    transition: transform 0.2s;
+  }
+  details[open] summary :global(svg) {
+    transform: rotate(180deg);
+  }
+  .cols {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+    gap: 20px;
+  }
+  h4 {
+    font-size: 13px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 500;
+  }
+  .ticks {
+    margin-top: 10px;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--text-2);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .ticks li::marker {
+    color: var(--mint);
+  }
+
+  .box {
+    margin-top: 72px;
+    scroll-margin-top: 96px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding: clamp(24px, 5vw, 56px);
+    border-radius: var(--r-xl);
+    background: linear-gradient(160deg, rgba(124, 240, 206, 0.1), rgba(169, 182, 255, 0.06) 50%, rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  .intro2 {
+    flex: 1 1 300px;
+    min-width: 0;
+  }
+  .intro2 .lead {
+    margin-top: 18px;
+    font-size: 16px;
+    max-width: 400px;
+  }
+  .small {
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+    word-break: break-word;
+  }
+  .form {
+    flex: 1 1 420px;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: 14px;
+  }
+  .full {
+    grid-column: 1 / -1;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  label {
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .hint {
+    font-size: 12px;
+    color: var(--faint);
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 14px;
+    border-radius: 12px;
+    background: rgba(7, 9, 13, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text);
+    transition: border-color 0.2s;
+  }
+  select {
+    padding: 0 12px;
+  }
+  textarea {
+    padding: 12px 14px;
+    resize: vertical;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--mint);
+  }
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .turnstile:empty {
+    display: none;
+  }
+  .status {
+    min-height: 1.5em;
+    font-size: 14px;
+  }
+  .status[data-kind='ok'] {
+    color: var(--mint);
+  }
+  .status[data-kind='err'] {
+    color: #ffb4a8;
+  }
+  .fine {
+    font-size: 12px;
+    color: var(--faint);
+  }
+  button:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+</style>

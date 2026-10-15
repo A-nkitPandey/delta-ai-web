@@ -112,4 +112,21 @@ const faq = defineCollection({
   }),
 });
 
-export const collections = { services, work, plans, process, security, faq };
+/** Job openings on /careers. Set "open": false to hide a role without deleting it. */
+const jobs = defineCollection({
+  loader: file('./src/content/jobs.json'),
+  schema: z.object({
+    title: z.string(),
+    type: z.enum(['Full-time', 'Part-time', 'Internship', 'Contract']),
+    location: z.string(),
+    remote: z.boolean().default(false),
+    summary: z.string().max(240),
+    responsibilities: z.array(z.string()).default([]),
+    requirements: z.array(z.string()).default([]),
+    open: z.boolean().default(true),
+    datePosted: z.iso.date(),
+    order: z.number().default(100),
+  }),
+});
+
+export const collections = { services, work, plans, process, security, faq, jobs };

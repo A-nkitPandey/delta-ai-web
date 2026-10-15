@@ -38,7 +38,7 @@ const clean = (max: number) =>
 const LeadSchema = z.object({
   name: clean(100).pipe(z.string().min(2, 'Please enter your name.')),
   email: z.string().trim().toLowerCase().pipe(z.email('Please enter a valid email address.').max(200)),
-  company: clean(120).optional().default(''),
+  company: clean(300).optional().default(''), // company, or profile link for job applications
   service: z.string().regex(/^[a-z0-9-]{1,60}$/, 'Please choose a service.'),
   budget: clean(40).pipe(z.string().min(1)),
   message: clean(4000).pipe(z.string().min(10, 'Please add a few words about your project.')),
@@ -94,19 +94,23 @@ async function verifyTurnstile(token: string, ip: string, secret: string) {
   return true;
 }
 
+const isApplication = (lead: Lead) => lead.service.startsWith('careers-');
+
 function leadSummary(lead: Lead, id: number | null) {
+  const job = isApplication(lead);
+  const kind = job ? 'job application' : 'enquiry';
   const rows: [string, string][] = [
     ['Name', lead.name],
     ['Email', lead.email],
-    ['Company', lead.company || '—'],
-    ['Service', lead.service],
-    ['Budget', lead.budget],
+    [job ? 'Profile / resume' : 'Company', lead.company || '—'],
+    [job ? 'Role' : 'Service', job ? lead.service.slice('careers-'.length).replaceAll('-', ' ') : lead.service],
+    [job ? 'Experience' : 'Budget', lead.budget],
     ['Page', lead.page],
   ];
-  const subject = `New enquiry: ${lead.service} — ${lead.name}`.slice(0, 150);
-  const text = `New website enquiry${id ? ` #${id}` : ''}\n\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${lead.message}\n\nReply to this email to answer ${lead.name} directly.`;
+  const subject = (job ? `New job application: ${rows[3][1]} — ${lead.name}` : `New enquiry: ${lead.service} — ${lead.name}`).slice(0, 150);
+  const text = `New website ${kind}${id ? ` #${id}` : ''}\n\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${lead.message}\n\nReply to this email to answer ${lead.name} directly.`;
   const html = `
-    <h2 style="font-family:sans-serif">New enquiry${id ? ` #${id}` : ''}</h2>
+    <h2 style="font-family:sans-serif">New ${kind}${id ? ` #${id}` : ''}</h2>
     <table style="font-family:sans-serif;font-size:14px">${rows
       .map(([k, v]) => `<tr><td style="color:#666;padding:4px 12px 4px 0">${k}</td><td>${escapeHtml(v)}</td></tr>`)
       .join('')}</table>
@@ -200,6 +204,11 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json(400, { message: 'Invalid request.' });
   }
 
+  // Job applications must include a link to a profile, portfolio or resume.
+  if (isApplication(parsed) && !/^https:\/\/[^\s]+\.[^\s]+$/i.test(parsed.company)) {
+    return json(400, { message: 'Please add an https:// link to your LinkedIn, portfolio or resume.' });
+  }
+
   // 4. Honeypot and fill-time trap: pretend success so bots learn nothing.
   if (parsed.website || parsed.t < MIN_FILL_MS) return json(200, { message: 'Thanks! We’ll be in touch.' });
 
@@ -260,7 +269,11 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json(502, { message: `We couldn’t send that just now. Please email us at ${env.CONTACT_TO_EMAIL}.` });
   }
 
-  return json(200, { message: 'Thanks! We’ve received your request and will reply within one business day.' });
+  return json(200, {
+    message: isApplication(parsed)
+      ? 'Thanks for applying! We read every application and will get back to you if there’s a fit.'
+      : 'Thanks! We’ve received your request and will reply within one business day.',
+  });
 };
 
 export const ALL: APIRoute = () => json(405, { message: 'Method not allowed.' }, { Allow: 'POST' });
