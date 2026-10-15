@@ -4,10 +4,10 @@ import { site } from '@/lib/site';
 import Icon from './Icon.astro';
 
 const services = (await getCollection('services', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
-// With a real Turnstile key the form posts to /api/contact (saved to D1, spam-checked).
-// Without one, it opens the visitor's email app pre-filled to our inbox — works with zero setup.
+// The form always posts to /api/contact, which saves the lead and emails it to us.
+// Adding a Turnstile site key later switches on Cloudflare's extra bot check.
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
-const mode = siteKey ? 'api' : 'email';
+const turnstile = !!siteKey;
 const budgets = ['Not sure yet', 'Under ₹1 lakh', '₹1–5 lakh', '₹5–15 lakh', '₹15 lakh +'];
 const whatsapp = site.contact.whatsapp;
 ---
@@ -44,7 +44,7 @@ const whatsapp = site.contact.whatsapp;
       </ul>
     </div>
 
-    <form id="contact-form" class="form" action="/api/contact" method="post" novalidate data-sitekey={siteKey} data-mode={mode} data-to={site.contact.email}>
+    <form id="contact-form" class="form" action="/api/contact" method="post" novalidate data-sitekey={siteKey} data-to={site.contact.email}>
       <div class="field">
         <label for="f-name">Your name</label>
         <input id="f-name" name="name" type="text" autocomplete="name" required maxlength="100" />
@@ -82,28 +82,19 @@ const whatsapp = site.contact.whatsapp;
         <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off" />
       </div>
 
-      {mode === 'api' && <div class="full turnstile" id="ts-widget" />}
+      {turnstile && <div class="full turnstile" id="ts-widget" />}
 
       <button type="submit" class="btn btn--primary btn--block full" id="f-submit">Send request</button>
       <p class="full status" id="f-status" role="status" aria-live="polite"></p>
-      {
-        mode === 'api' ? (
-          <p class="full fine">
-            Protected by Cloudflare Turnstile. We only use your details to reply. See our <a href="/privacy">privacy policy</a>.
-          </p>
-        ) : (
-          <p class="full fine">
-            Sending opens your email app with your message ready to go to {site.contact.email}. We only use your details to reply. See our{' '}
-            <a href="/privacy">privacy policy</a>.
-          </p>
-        )
-      }
+      <p class="full fine">
+        {turnstile ? 'Protected by Cloudflare Turnstile. ' : ''}We only use your details to reply. See our <a href="/privacy">privacy policy</a>.
+      </p>
       <noscript><p class="full fine">This form needs JavaScript. You can also email us at <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.</p></noscript>
     </form>
   </div>
 </section>
 
-{mode === 'api' && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer />}
+{turnstile && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer />}
 
 <script>
   type TurnstileApi = {
@@ -122,7 +113,8 @@ const whatsapp = site.contact.whatsapp;
     const status = document.getElementById('f-status') as HTMLElement;
     const submit = document.getElementById('f-submit') as HTMLButtonElement;
     const widgetEl = document.getElementById('ts-widget') as HTMLElement | null;
-    const emailMode = form.dataset.mode === 'email';
+    const useTurnstile = !!form.dataset.sitekey;
+    const openedAt = Date.now();
     let widgetId: string | undefined;
 
     // Pre-select a service when arriving from a service page or plan card.
@@ -141,7 +133,7 @@ const whatsapp = site.contact.whatsapp;
         action: 'contact',
       });
     };
-    if (!emailMode) {
+    if (useTurnstile) {
       const wait = setInterval(() => {
         if (window.turnstile) {
           clearInterval(wait);
@@ -167,29 +159,8 @@ const whatsapp = site.contact.whatsapp;
         return;
       }
 
-      // No spam-check keys yet: hand the enquiry to the visitor's email app.
-      if (emailMode) {
-        const fd = new FormData(form);
-        if (fd.get('website')) return; // honeypot
-        const get = (k: string) => String(fd.get(k) ?? '').trim();
-        const serviceLabel = select?.selectedOptions[0]?.textContent?.trim() ?? get('service');
-        const subject = `Project enquiry: ${serviceLabel} — ${get('name')}`;
-        const body = [
-          `Name: ${get('name')}`,
-          `Email: ${get('email')}`,
-          `Company: ${get('company') || '—'}`,
-          `Service: ${serviceLabel}`,
-          `Budget: ${get('budget')}`,
-          '',
-          get('message'),
-        ].join('\n');
-        window.location.href = `mailto:${form.dataset.to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        setStatus('Your email app should open with the message ready — just tap Send. No email app? Write to us at ' + form.dataset.to, 'ok');
-        return;
-      }
-
-      const token = window.turnstile?.getResponse(widgetId);
-      if (!token) {
+      const token = useTurnstile ? window.turnstile?.getResponse(widgetId) : '';
+      if (useTurnstile && !token) {
         setStatus('Just a second — completing the spam check. Please try again.', 'err');
         return;
       }
@@ -202,7 +173,7 @@ const whatsapp = site.contact.whatsapp;
         const res = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...data, token, page: location.pathname }),
+          body: JSON.stringify({ ...data, token, t: Date.now() - openedAt, page: location.pathname }),
         });
         const body = (await res.json().catch(() => ({}))) as { message?: string };
         if (res.ok) {
@@ -216,7 +187,7 @@ const whatsapp = site.contact.whatsapp;
       } finally {
         submit.disabled = false;
         submit.textContent = 'Send request';
-        window.turnstile?.reset(widgetId);
+        if (useTurnstile) window.turnstile?.reset(widgetId);
       }
     });
   }

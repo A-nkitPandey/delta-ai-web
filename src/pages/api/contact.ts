@@ -3,7 +3,12 @@
  *
  * Runs as a Cloudflare Worker (free plan: 100,000 requests/day).
  * Order of checks, cheapest first:
- *   same-origin → size → schema → honeypot → Turnstile → rate limit → save → email
+ *   same-origin → size → schema → honeypot/timing → Turnstile (when configured)
+ *   → rate limit → save → email
+ *
+ * Email goes out through Cloudflare Email Routing's send_email binding (free,
+ * to the verified destination in wrangler.jsonc). Resend is used instead if a
+ * RESEND_API_KEY secret is ever added.
  */
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
@@ -14,6 +19,8 @@ export const prerender = false;
 const MAX_BODY_BYTES = 16 * 1024;
 const PER_IP_PER_HOUR = 3;
 const GLOBAL_PER_DAY = 300;
+/** Humans take a few seconds to fill the form; instant submissions are bots. */
+const MIN_FILL_MS = 3000;
 const TURNSTILE_TEST_SECRETS = new Set([
   '1x0000000000000000000000000000000AA',
   '2x0000000000000000000000000000000AA',
@@ -37,7 +44,8 @@ const LeadSchema = z.object({
   message: clean(4000).pipe(z.string().min(10, 'Please add a few words about your project.')),
   website: z.string().max(200).optional().default(''), // honeypot
   page: z.string().max(200).optional().default('/'),
-  token: z.string().min(1, 'Spam check missing. Please try again.').max(4096),
+  token: z.string().max(4096).optional().default(''),
+  t: z.coerce.number().int().nonnegative().optional().default(0), // ms the form was open
 });
 
 type Lead = z.infer<typeof LeadSchema>;
@@ -86,9 +94,7 @@ async function verifyTurnstile(token: string, ip: string, secret: string) {
   return true;
 }
 
-async function sendEmail(lead: Lead, id: number | null) {
-  const apiKey = env.RESEND_API_KEY;
-  if (!apiKey) return false;
+function leadSummary(lead: Lead, id: number | null) {
   const rows: [string, string][] = [
     ['Name', lead.name],
     ['Email', lead.email],
@@ -97,23 +103,72 @@ async function sendEmail(lead: Lead, id: number | null) {
     ['Budget', lead.budget],
     ['Page', lead.page],
   ];
+  const subject = `New enquiry: ${lead.service} — ${lead.name}`.slice(0, 150);
+  const text = `New website enquiry${id ? ` #${id}` : ''}\n\n${rows.map(([k, v]) => `${k}: ${v}`).join('\n')}\n\n${lead.message}\n\nReply to this email to answer ${lead.name} directly.`;
   const html = `
     <h2 style="font-family:sans-serif">New enquiry${id ? ` #${id}` : ''}</h2>
     <table style="font-family:sans-serif;font-size:14px">${rows
       .map(([k, v]) => `<tr><td style="color:#666;padding:4px 12px 4px 0">${k}</td><td>${escapeHtml(v)}</td></tr>`)
       .join('')}</table>
-    <p style="font-family:sans-serif;font-size:14px;white-space:pre-wrap">${escapeHtml(lead.message)}</p>`;
+    <p style="font-family:sans-serif;font-size:14px;white-space:pre-wrap">${escapeHtml(lead.message)}</p>
+    <p style="font-family:sans-serif;font-size:12px;color:#666">Reply to this email to answer ${escapeHtml(lead.name)} directly.</p>`;
+  return { subject, text, html };
+}
 
+const b64 = (s: string) => {
+  const bytes = new TextEncoder().encode(s);
+  let bin = '';
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin);
+};
+
+/** Raw MIME for older runtimes that only accept EmailMessage. */
+function buildMime(from: string, to: string, replyTo: string, subject: string, text: string) {
+  const body = b64(text).replace(/(.{76})/g, '$1\r\n');
+  return [
+    `From: Delta AI Website <${from}>`,
+    `To: <${to}>`,
+    `Reply-To: <${replyTo}>`,
+    `Subject: =?UTF-8?B?${b64(subject)}?=`,
+    `Message-ID: <${crypto.randomUUID()}@deltaaiinnovation.in>`,
+    `Date: ${new Date().toUTCString()}`,
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=UTF-8',
+    'Content-Transfer-Encoding: base64',
+    '',
+    body,
+  ].join('\r\n');
+}
+
+async function sendEmail(lead: Lead, id: number | null): Promise<boolean> {
+  const { subject, text, html } = leadSummary(lead, id);
+  const from = env.CONTACT_SENDER;
+  const to = env.CONTACT_NOTIFY_TO;
+
+  // 1) Cloudflare Email Routing (free, no extra account).
+  if (env.EMAIL && to) {
+    try {
+      await env.EMAIL.send({ from: { name: 'Delta AI Website', email: from }, to, replyTo: lead.email, subject, text, html });
+      return true;
+    } catch (err) {
+      console.error('send_email (builder) failed, trying raw MIME', err);
+      try {
+        const { EmailMessage } = await import('cloudflare:email');
+        await env.EMAIL.send(new EmailMessage(from, to, buildMime(from, to, lead.email, subject, text)));
+        return true;
+      } catch (err2) {
+        console.error('send_email (raw) failed', err2);
+      }
+    }
+  }
+
+  // 2) Resend, if an API key is ever configured.
+  const apiKey = (env as { RESEND_API_KEY?: string }).RESEND_API_KEY;
+  if (!apiKey) return false;
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: env.CONTACT_FROM_EMAIL,
-      to: [env.CONTACT_TO_EMAIL],
-      reply_to: lead.email,
-      subject: `New enquiry: ${lead.service} — ${lead.name}`.slice(0, 150),
-      html,
-    }),
+    body: JSON.stringify({ from: env.CONTACT_FROM_EMAIL, to: [env.CONTACT_TO_EMAIL], reply_to: lead.email, subject, html }),
     signal: AbortSignal.timeout(8000),
   });
   return res.ok;
@@ -145,31 +200,32 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json(400, { message: 'Invalid request.' });
   }
 
-  // 4. Honeypot: pretend success so bots learn nothing.
-  if (parsed.website) return json(200, { message: 'Thanks! We’ll be in touch.' });
+  // 4. Honeypot and fill-time trap: pretend success so bots learn nothing.
+  if (parsed.website || parsed.t < MIN_FILL_MS) return json(200, { message: 'Thanks! We’ll be in touch.' });
 
   const ip = request.headers.get('CF-Connecting-IP') ?? clientAddress ?? '';
   const country = request.headers.get('CF-IPCountry') ?? null;
 
-  // 5. Bot check.
-  const secret = env.TURNSTILE_SECRET_KEY;
+  // 5. Turnstile bot check — enforced once a real secret is configured.
+  //    Until then the honeypot, fill-time trap and rate limits protect the form.
+  const secret = (env as { TURNSTILE_SECRET_KEY?: string }).TURNSTILE_SECRET_KEY;
   const host = new URL(request.url).hostname;
   const isLocal = host === 'localhost' || host === '127.0.0.1';
-  if (!secret || (TURNSTILE_TEST_SECRETS.has(secret) && !isLocal)) {
-    console.error('TURNSTILE_SECRET_KEY missing or still a test key in production');
-    return json(500, { message: 'Form is not configured yet. Please email us.' });
-  }
-  try {
-    if (!(await verifyTurnstile(parsed.token, ip, secret))) {
-      return json(400, { message: 'Spam check failed. Please refresh the page and try again.' });
+  const turnstileOn = !!secret && (!TURNSTILE_TEST_SECRETS.has(secret) || isLocal);
+  if (turnstileOn) {
+    if (!parsed.token) return json(400, { message: 'Spam check missing. Please try again.' });
+    try {
+      if (!(await verifyTurnstile(parsed.token, ip, secret))) {
+        return json(400, { message: 'Spam check failed. Please refresh the page and try again.' });
+      }
+    } catch {
+      return json(503, { message: 'Spam check is unavailable right now. Please try again shortly.' });
     }
-  } catch {
-    return json(503, { message: 'Spam check is unavailable right now. Please try again shortly.' });
   }
 
   // 6. Rate limits (per visitor and overall, to protect the free tier).
   const db = env.DB;
-  const ipHash = await sha256Hex(`${env.IP_HASH_SALT ?? ''}:${ip}`);
+  const ipHash = await sha256Hex(`${(env as { IP_HASH_SALT?: string }).IP_HASH_SALT ?? 'delta-ai'}:${ip}`);
   const [perIp, perDay] = await db.batch<{ n: number }>([
     db.prepare(`SELECT COUNT(*) AS n FROM leads WHERE ip_hash = ?1 AND created_at > datetime('now', '-1 hour')`).bind(ipHash),
     db.prepare(`SELECT COUNT(*) AS n FROM leads WHERE created_at > datetime('now', '-1 day')`),
@@ -191,16 +247,20 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     .first<{ id: number }>();
   const id = insert?.id ?? null;
 
-  // 8. Notify the team. A failed email never loses the lead — it's already saved.
+  // 8. Notify the team. The lead is already saved; if the email can't go out,
+  //    ask the visitor to write directly so nothing slips through unseen.
+  let emailed = false;
   try {
-    if (await sendEmail(parsed, id)) {
-      if (id) await db.prepare('UPDATE leads SET emailed = 1 WHERE id = ?1').bind(id).run();
-    }
+    emailed = await sendEmail(parsed, id);
+    if (emailed && id) await db.prepare('UPDATE leads SET emailed = 1 WHERE id = ?1').bind(id).run();
   } catch (err) {
     console.error('email failed', err);
   }
+  if (!emailed) {
+    return json(502, { message: `We couldn’t send that just now. Please email us at ${env.CONTACT_TO_EMAIL}.` });
+  }
 
-  return json(200, { message: 'Thanks! We’ll reply within one business day.' });
+  return json(200, { message: 'Thanks! We’ve received your request and will reply within one business day.' });
 };
 
 export const ALL: APIRoute = () => json(405, { message: 'Method not allowed.' }, { Allow: 'POST' });
