@@ -11,10 +11,10 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 const experience = ['Student / fresher', 'Under 1 year', '1–3 years', '3–5 years', '5+ years'];
 
 const perks = [
-  { icon: 'apps', title: 'Real products, real users', text: 'Your work goes live for real businesses — not demo projects that sit in a folder.' },
-  { icon: 'ai', title: 'Practical AI, hands-on', text: 'Build assistants and automations with modern AI tools and see what actually works.' },
-  { icon: 'spark', title: 'Ownership from day one', text: 'Small team, so you own features end to end and your ideas get heard.' },
-  { icon: 'check', title: 'Credit for your work', text: 'Ship things you can proudly show in your portfolio and talk about in interviews.' },
+  { icon: 'apps', title: 'Hands-on live projects', text: 'Work on real products for real businesses — not practice projects that sit in a folder.' },
+  { icon: 'spark', title: 'Mentorship', text: 'Learn directly from our engineering team with regular reviews and feedback.' },
+  { icon: 'check', title: 'Internship certificate', text: 'A certificate on completion, plus work you can proudly show in your portfolio.' },
+  { icon: 'ai', title: 'Path to a full-time role', text: 'Top performers get the chance of a full-time offer.' },
 ] as const;
 
 const employmentType = { 'Full-time': 'FULL_TIME', 'Part-time': 'PART_TIME', Internship: 'INTERN', Contract: 'CONTRACTOR' } as const;
@@ -24,7 +24,7 @@ const list = (items: string[]) => `<ul>${items.map((i) => `<li>${i}</li>`).join(
 const jsonLd = jobs.map(({ data: j }) => ({
   '@type': 'JobPosting',
   title: j.title,
-  description: `<p>${j.summary}</p><p><strong>What you’ll do</strong></p>${list(j.responsibilities)}<p><strong>What we’re looking for</strong></p>${list(j.requirements)}`,
+  description: `<p>${j.summary}</p>${j.duration ? `<p>Duration: ${j.duration}.${j.stipend ? ` Stipend: ${j.stipend}.` : ''}</p>` : ''}<p><strong>What you’ll do</strong></p>${list(j.responsibilities)}<p><strong>What we’re looking for</strong></p>${list(j.requirements)}`,
   datePosted: j.datePosted,
   employmentType: employmentType[j.type],
   directApply: true,
@@ -37,7 +37,7 @@ const jsonLd = jobs.map(({ data: j }) => ({
 
 <BaseLayout
   title="Careers"
-  description={`Join ${site.legalName} in ${site.contact.city}. Open roles and internships in full-stack development, AI automation and UI/UX design.`}
+  description={`Join ${site.legalName} in ${site.contact.city}. Remote internships in QA, software development and AI engineering.`}
   jsonLd={jsonLd}
 >
   <div class="wrap page">
@@ -48,6 +48,7 @@ const jsonLd = jobs.map(({ data: j }) => ({
       learning fast, we’d love to hear from you.
     </p>
 
+    <h2 class="eyebrow perks-title">What you’ll get</h2>
     <ul class="perks">
       {
         perks.map((p) => (
@@ -55,7 +56,7 @@ const jsonLd = jobs.map(({ data: j }) => ({
             <span class="ic">
               <Icon name={p.icon} size={20} strokeWidth={1.8} />
             </span>
-            <h2>{p.title}</h2>
+            <h3>{p.title}</h3>
             <p class="muted">{p.text}</p>
           </li>
         ))
@@ -79,6 +80,8 @@ const jsonLd = jobs.map(({ data: j }) => ({
                   <ul class="chips">
                     <li class="chip">{j.type}</li>
                     <li class="chip">{j.location}</li>
+                    {j.duration && <li class="chip">{j.duration}</li>}
+                    {j.stipend && <li class="chip">{j.stipend}</li>}
                   </ul>
                 </div>
                 <a href={`/careers?role=${id}#apply`} class="btn btn--primary btn--sm apply" data-role={id}>
@@ -268,7 +271,7 @@ const jsonLd = jobs.map(({ data: j }) => ({
     max-width: 720px;
   }
   .perks {
-    margin-top: 40px;
+    margin-top: 20px;
     list-style: none;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
@@ -277,7 +280,10 @@ const jsonLd = jobs.map(({ data: j }) => ({
   .perk {
     padding: 24px;
   }
-  .perk h2 {
+  .perks-title {
+    margin-top: 48px;
+  }
+  .perk h3 {
     margin-top: 16px;
     font-size: 17px;
     letter-spacing: -0.01em;

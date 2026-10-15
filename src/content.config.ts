@@ -120,6 +120,8 @@ const jobs = defineCollection({
     type: z.enum(['Full-time', 'Part-time', 'Internship', 'Contract']),
     location: z.string(),
     remote: z.boolean().default(false),
+    duration: z.string().optional(),
+    stipend: z.string().optional(),
     summary: z.string().max(240),
     responsibilities: z.array(z.string()).default([]),
     requirements: z.array(z.string()).default([]),

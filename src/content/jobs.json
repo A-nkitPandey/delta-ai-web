@@ -1,1 +1,65 @@
-[]
+[
+  {
+    "id": "qa-intern",
+    "title": "QA Intern",
+    "type": "Internship",
+    "location": "Remote",
+    "remote": true,
+    "duration": "3–6 months",
+    "stipend": "Unpaid",
+    "summary": "Help us ship bug-free products by testing real client apps before they go live.",
+    "responsibilities": [
+      "Write and run manual and automated test cases",
+      "Find, document and track bugs through to resolution"
+    ],
+    "requirements": [
+      "An eye for detail and a habit of breaking things on purpose",
+      "Bonus: experience with Selenium, Playwright or Postman"
+    ],
+    "open": true,
+    "datePosted": "2026-10-15",
+    "order": 1
+  },
+  {
+    "id": "developer-intern",
+    "title": "Developer Intern",
+    "type": "Internship",
+    "location": "Remote",
+    "remote": true,
+    "duration": "3–6 months",
+    "stipend": "Unpaid",
+    "summary": "Build and ship features across the frontend and backend of live client projects.",
+    "responsibilities": [
+      "Build and ship features across frontend and backend",
+      "Work with JavaScript/TypeScript, React, Node.js or Python"
+    ],
+    "requirements": [
+      "Working knowledge of JavaScript/TypeScript, React, Node.js or Python",
+      "Comfortable with Git and writing clean, readable code"
+    ],
+    "open": true,
+    "datePosted": "2026-10-15",
+    "order": 2
+  },
+  {
+    "id": "ai-engineer-intern",
+    "title": "AI Engineer Intern",
+    "type": "Internship",
+    "location": "Remote",
+    "remote": true,
+    "duration": "3–6 months",
+    "stipend": "Unpaid",
+    "summary": "Build with LLMs, prompt engineering, RAG and AI agents for real business use cases.",
+    "responsibilities": [
+      "Build with LLMs, prompt engineering, RAG and AI agents",
+      "Evaluate how well models and assistants perform"
+    ],
+    "requirements": [
+      "Strong Python; exposure to PyTorch, LangChain or LLM APIs",
+      "Curious about how models work and how to evaluate them"
+    ],
+    "open": true,
+    "datePosted": "2026-10-15",
+    "order": 3
+  }
+]

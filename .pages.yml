@@ -167,6 +167,8 @@ content:
         options: { values: [Full-time, Part-time, Internship, Contract] }
       - { name: location, label: Location, type: string }
       - { name: remote, label: Fully remote?, type: boolean }
+      - { name: duration, label: Duration (e.g. 3–6 months), type: string }
+      - { name: stipend, label: Stipend / salary (e.g. Unpaid, ₹10,000/month), type: string }
       - { name: summary, label: One-line summary, type: text }
       - { name: responsibilities, label: What you'll do, type: string, list: true }
       - { name: requirements, label: What we're looking for, type: string, list: true }
