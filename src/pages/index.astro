@@ -2,12 +2,14 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/Hero.astro';
+import StorySection from '@/components/StorySection.astro';
 import ServicesSection from '@/components/ServicesSection.astro';
 import IndustriesSection from '@/components/IndustriesSection.astro';
 import AiDemo from '@/components/AiDemo.astro';
 import FeaturedWork from '@/components/FeaturedWork.astro';
 import ProcessSection from '@/components/ProcessSection.astro';
 import SecuritySection from '@/components/SecuritySection.astro';
+import OwnershipSection from '@/components/OwnershipSection.astro';
 import PlansSection from '@/components/PlansSection.astro';
 import FaqSection from '@/components/FaqSection.astro';
 import ContactSection from '@/components/ContactSection.astro';
@@ -48,12 +50,14 @@ const jsonLd = [
 
 <BaseLayout jsonLd={jsonLd}>
   <Hero />
+  <StorySection />
   <ServicesSection />
   <AiDemo />
   <IndustriesSection />
   <FeaturedWork />
   <ProcessSection />
   <SecuritySection />
+  <OwnershipSection />
   <PlansSection />
   <FaqSection items={faq} />
   <ContactSection />

@@ -1,0 +1,217 @@
+---
+/**
+ * "What the AI does" told in three words that light up as you scroll.
+ * Each step has a short example chat. Without JavaScript (or with reduced
+ * motion) every word is lit and the steps simply read top to bottom.
+ */
+const steps = [
+  {
+    word: 'Replies.',
+    text: 'Answers every WhatsApp and website question in seconds — in English, Hindi or Hinglish, even at midnight.',
+    them: 'Sunday open hai? Kitne baje tak?',
+    us: 'Haan ji! Sunday 10 se 8 baje tak open hai. Aapke liye slot book kar doon? 🙂',
+  },
+  {
+    word: 'Books.',
+    text: 'Turns the chat into a confirmed booking, token or order — straight into your calendar, sheet or billing.',
+    them: 'Haan, 5:30 haircut. Naam Rahul.',
+    us: 'Done ✅ Token #18 · Haircut · Today 5:30 PM · Rahul. See you soon!',
+  },
+  {
+    word: 'Remembers.',
+    text: 'Knows your regulars, sends reminders and follow-ups, and brings customers back without you chasing them.',
+    them: '',
+    us: 'Hi Priya ji 🌸 your monthly facial is due this week. Same time as last month — Saturday 11 AM?',
+  },
+];
+---
+
+<section class="story wrap" aria-labelledby="story-title" data-story>
+  <h2 id="story-title" class="sr-only">What our AI assistant does for your business</h2>
+  <div class="grid">
+    <div class="words" aria-hidden="true">
+      <p class="eyebrow">Your 24×7 front desk</p>
+      <ol>
+        {steps.map((s, i) => <li data-i={i}>{s.word}</li>)}
+      </ol>
+    </div>
+
+    <ol class="steps">
+      {
+        steps.map((s, i) => (
+          <li class="step" data-i={i}>
+            <h3 class="word-m">{s.word}</h3>
+            <p class="lead">{s.text}</p>
+            <div class="phone glass" role="img" aria-label={`Example chat: ${s.them ? `customer says “${s.them}”, ` : ''}assistant replies “${s.us}”`}>
+              <span class="tag">Example chat</span>
+              {s.them && <p class="b them">{s.them}</p>}
+              <p class="b us">{s.us}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<script>
+  const story = document.querySelector<HTMLElement>('[data-story]');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (story && !reduce && 'IntersectionObserver' in window) {
+    const words = story.querySelectorAll<HTMLElement>('.words li');
+    const steps = story.querySelectorAll<HTMLElement>('.step');
+    story.classList.add('live');
+    const setActive = (i: number) => {
+      words.forEach((w) => w.classList.toggle('on', w.dataset.i === String(i)));
+      steps.forEach((s) => s.classList.toggle('on', s.dataset.i === String(i)));
+    };
+    setActive(0);
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.i));
+      },
+      { rootMargin: '-45% 0px -45% 0px', threshold: 0 },
+    );
+    steps.forEach((s) => io.observe(s));
+  }
+</script>
+
+<style>
+  .story {
+    padding-block: clamp(40px, 7vw, 80px);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 6vw, 80px);
+  }
+  .words {
+    position: sticky;
+    top: clamp(90px, 22vh, 200px);
+    align-self: start;
+  }
+  .words ol {
+    list-style: none;
+    margin-top: 14px;
+  }
+  .words li {
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 650;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    background: linear-gradient(100deg, var(--mint) 10%, var(--peri) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition:
+      opacity 0.5s ease,
+      filter 0.5s ease,
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .live .words li {
+    opacity: 0.16;
+    filter: blur(1px);
+    transform: translateX(-6px);
+  }
+  .live .words li.on {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+  .steps {
+    list-style: none;
+  }
+  .step {
+    min-height: 62vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+    padding-block: 24px;
+  }
+  .live .step {
+    opacity: 0.35;
+    transition: opacity 0.5s ease;
+  }
+  .live .step.on {
+    opacity: 1;
+  }
+  .word-m {
+    display: none;
+  }
+  .lead {
+    font-size: clamp(17px, 2vw, 21px);
+    line-height: 1.5;
+    color: var(--text-2);
+    max-width: 460px;
+  }
+  .phone {
+    max-width: 400px;
+    padding: 16px;
+    border-radius: var(--r-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .b {
+    max-width: 88%;
+    padding: 10px 13px;
+    border-radius: 16px;
+    font-size: 14.5px;
+    line-height: 1.45;
+  }
+  .them {
+    align-self: flex-start;
+    background: rgba(var(--fg-rgb), 0.07);
+    border-bottom-left-radius: 5px;
+  }
+  .us {
+    align-self: flex-end;
+    background: rgba(var(--mint-rgb), 0.14);
+    border: 1px solid rgba(var(--mint-rgb), 0.28);
+    border-bottom-right-radius: 5px;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 760px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .words {
+      top: 88px;
+      z-index: 2;
+      margin-inline: calc(var(--gutter) * -1);
+      padding: 10px var(--gutter) 22px;
+      background: linear-gradient(var(--ink) 78%, transparent);
+    }
+    .words ol {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .words li {
+      font-size: clamp(20px, 6.2vw, 34px);
+      white-space: nowrap;
+    }
+    .step {
+      min-height: 0;
+      padding-block: 28px;
+    }
+  }
+</style>

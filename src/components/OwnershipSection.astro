@@ -1,0 +1,69 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+
+const items = [
+  { icon: 'systems', title: 'You own the code & data', text: 'Source code, database and admin access are handed over to you. Export everything, any time.' },
+  { icon: 'whatsapp', title: 'Your number, your accounts', text: 'WhatsApp, domain, payment gateway and cloud accounts are set up in your business name — not ours.' },
+  { icon: 'cloud', title: 'You choose where data lives', text: 'Host where you prefer, including Indian data centres, with encrypted backups.' },
+  { icon: 'shield', title: 'No lock-in', text: 'No long contracts. If you ever move on, we help with a clean handover.' },
+] as const;
+---
+
+<section id="ownership" class="section wrap" aria-labelledby="own-title">
+  <SectionHeading id="own-title" eyebrow="Ownership" before="Your business." accent="Your data." center />
+  <p class="lead">Many agencies keep the keys. We don’t. Everything we build for you belongs to you from day one.</p>
+  <ul class="grid">
+    {
+      items.map((it) => (
+        <li class="glass item">
+          <span class="ic">
+            <Icon name={it.icon} size={20} strokeWidth={1.8} />
+          </span>
+          <h3>{it.title}</h3>
+          <p class="muted">{it.text}</p>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .lead {
+    margin: 18px auto 0;
+    max-width: 560px;
+    text-align: center;
+    font-size: 16px;
+  }
+  .grid {
+    margin-top: 36px;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: 14px;
+  }
+  .item {
+    padding: 24px;
+  }
+  .ic {
+    display: inline-flex;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    color: var(--mint);
+    background: rgba(var(--mint-rgb), 0.1);
+    border: 1px solid rgba(var(--mint-rgb), 0.22);
+  }
+  h3 {
+    margin-top: 16px;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  p.muted {
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+</style>

@@ -1,0 +1,370 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/lib/site';
+
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+
+const who = [
+  { icon: 'apps', title: 'IT & computer shops', text: 'Your customers already ask you for billing, websites and WhatsApp help.' },
+  { icon: 'chart', title: 'CAs & accountants', text: 'You see which businesses are growing and still doing everything by hand.' },
+  { icon: 'spark', title: 'Marketing & design agencies', text: 'Add AI assistants, booking and payments to what you already offer.' },
+  { icon: 'store', title: 'Consultants & freelancers', text: 'Know a salon, clinic, shop or coaching centre that needs software? Introduce us.' },
+] as const;
+
+const steps = [
+  { title: 'Introduce', text: 'Tell us about a business that could use our help, or bring us into a meeting.' },
+  { title: 'We demo & build', text: 'We run the demo, write the proposal and build — you stay in the loop throughout.' },
+  { title: 'You’re rewarded', text: 'When the client signs, you get the referral reward we agreed with you in writing, upfront.' },
+];
+
+const perks = [
+  'Referral reward agreed in writing before you introduce anyone',
+  'A ready demo you can show your clients on your phone',
+  'Priority support for every client you bring',
+  'No joining fee, no targets — ever',
+];
+
+const types = ['IT / computer shop', 'CA / accountant', 'Marketing or design agency', 'Consultant / freelancer', 'Other'];
+---
+
+<BaseLayout
+  title="Partner with us"
+  description={`Refer local businesses to ${site.legalName}. A partner programme for IT shops, CAs, agencies and consultants across India.`}
+>
+  <div class="wrap page">
+    <Breadcrumbs items={[{ name: 'Partners', href: '/partners' }]} />
+    <SectionHeading as="h1" eyebrow="Partner programme" before="Know a business that needs AI?" accent="Let’s grow together." />
+    <p class="lead intro">
+      You already have the trust of local businesses. We have the team to build their AI assistants, booking systems and apps. Introduce us — we do the work, you get
+      rewarded, and your client gets software that actually helps.
+    </p>
+
+    <h2 class="eyebrow block-title">Who it’s for</h2>
+    <ul class="cards">
+      {
+        who.map((p) => (
+          <li class="glass card">
+            <span class="ic">
+              <Icon name={p.icon} size={20} strokeWidth={1.8} />
+            </span>
+            <h3>{p.title}</h3>
+            <p class="muted">{p.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2 class="eyebrow block-title">How it works</h2>
+    <ol class="steps">
+      {
+        steps.map((s, i) => (
+          <li class="glass step">
+            <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{s.title}</h3>
+            <p class="muted">{s.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <section class="box" id="join" aria-labelledby="join-title">
+      <div class="intro2">
+        <h2 id="join-title" class="h2">Become a <span class="accent accent--mint">partner.</span></h2>
+        <ul class="ticks">
+          {
+            perks.map((p) => (
+              <li>
+                <Icon name="check" size={16} strokeWidth={2} /> {p}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="muted small">We never ask partners for money. Prefer email? Write to <a href={`mailto:${site.contact.email}?subject=Partnership`}>{site.contact.email}</a>.</p>
+      </div>
+
+      <form id="partner-form" class="form" action="/api/contact" method="post" novalidate data-sitekey={siteKey}>
+        <input type="hidden" name="service" value="partner" />
+        <div class="field">
+          <label for="p-name">Your name</label>
+          <input id="p-name" name="name" type="text" autocomplete="name" required maxlength="100" />
+        </div>
+        <div class="field">
+          <label for="p-email">Email</label>
+          <input id="p-email" name="email" type="email" autocomplete="email" required maxlength="200" />
+        </div>
+        <div class="field">
+          <label for="p-biz">Business name & city</label>
+          <input id="p-biz" name="company" type="text" autocomplete="organization" required maxlength="300" placeholder="e.g. Sharma Computers, Lucknow" />
+        </div>
+        <div class="field">
+          <label for="p-type">You are a…</label>
+          <select id="p-type" name="budget" required>
+            {types.map((x) => <option value={x}>{x}</option>)}
+          </select>
+        </div>
+        <div class="field full">
+          <label for="p-msg">Tell us about the businesses you work with</label>
+          <textarea id="p-msg" name="message" rows="4" required minlength="10" maxlength="4000" placeholder="e.g. I look after billing software for 40 shops and salons in my area."
+          ></textarea>
+        </div>
+
+        <div class="hp" aria-hidden="true">
+          <label for="p-website">Website</label>
+          <input id="p-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        {siteKey && <div class="full turnstile" id="p-ts" />}
+
+        <button type="submit" class="btn btn--primary btn--block full" id="p-submit">Send</button>
+        <p class="full status" id="p-status" role="status" aria-live="polite"></p>
+        <p class="full fine">We only use your details to reply to you. See our <a href="/privacy">privacy policy</a>.</p>
+        <noscript><p class="full fine">This form needs JavaScript. You can also email us at <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.</p></noscript>
+      </form>
+    </section>
+  </div>
+</BaseLayout>
+
+{siteKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer />}
+
+<script>
+  type TurnstileApi = {
+    render: (el: HTMLElement, opts: Record<string, unknown>) => string;
+    reset: (id?: string) => void;
+    getResponse: (id?: string) => string | undefined;
+  };
+  const ts = () => (window as unknown as { turnstile?: TurnstileApi }).turnstile;
+
+  const form = document.getElementById('partner-form') as HTMLFormElement | null;
+  if (form) {
+    const status = document.getElementById('p-status') as HTMLElement;
+    const submit = document.getElementById('p-submit') as HTMLButtonElement;
+    const widgetEl = document.getElementById('p-ts') as HTMLElement | null;
+    const useTurnstile = !!form.dataset.sitekey;
+    const openedAt = Date.now();
+    let widgetId: string | undefined;
+
+    if (useTurnstile && widgetEl) {
+      const wait = setInterval(() => {
+        const t = ts();
+        if (t) {
+          clearInterval(wait);
+          widgetId = t.render(widgetEl, { sitekey: form.dataset.sitekey, theme: 'auto', appearance: 'interaction-only', action: 'contact' });
+        }
+      }, 150);
+      setTimeout(() => clearInterval(wait), 20000);
+    }
+
+    const setStatus = (msg: string, kind: 'ok' | 'err' | '') => {
+      status.textContent = msg;
+      status.dataset.kind = kind;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setStatus('', '');
+      if (!form.checkValidity()) {
+        form.querySelector<HTMLElement>(':invalid')?.focus();
+        setStatus('Please add your name, a valid email, your business and a short note.', 'err');
+        return;
+      }
+      const token = useTurnstile ? ts()?.getResponse(widgetId) : '';
+      if (useTurnstile && !token) {
+        setStatus('Just a second — completing the spam check. Please try again.', 'err');
+        return;
+      }
+      const data = Object.fromEntries(new FormData(form).entries());
+      submit.disabled = true;
+      submit.textContent = 'Sending…';
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...data, token, t: Date.now() - openedAt, page: location.pathname }),
+        });
+        const body = (await res.json().catch(() => ({}))) as { message?: string };
+        if (res.ok) {
+          form.reset();
+          setStatus(body.message ?? 'Thanks! We’ll be in touch.', 'ok');
+        } else {
+          setStatus(body.message ?? 'Something went wrong. Please email us instead.', 'err');
+        }
+      } catch {
+        setStatus('Network error. Please check your connection and try again.', 'err');
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'Send';
+        if (useTurnstile) ts()?.reset(widgetId);
+      }
+    });
+  }
+</script>
+
+<style>
+  .page {
+    padding-top: clamp(40px, 7vw, 72px);
+    padding-bottom: clamp(56px, 8vw, 96px);
+  }
+  .intro {
+    margin-top: 24px;
+    max-width: 720px;
+  }
+  .block-title {
+    margin-top: 48px;
+  }
+  .cards,
+  .steps {
+    margin-top: 20px;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+    gap: 14px;
+  }
+  .card,
+  .step {
+    padding: 24px;
+  }
+  .card h3,
+  .step h3 {
+    margin-top: 16px;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .card p,
+  .step p {
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .ic {
+    display: inline-flex;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    color: var(--mint);
+    background: rgba(var(--mint-rgb), 0.1);
+    border: 1px solid rgba(var(--mint-rgb), 0.22);
+  }
+  .num {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--mint);
+  }
+  .box {
+    margin-top: 72px;
+    scroll-margin-top: 96px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding: clamp(24px, 5vw, 56px);
+    border-radius: var(--r-xl);
+    background: linear-gradient(160deg, rgba(var(--mint-rgb), 0.1), rgba(var(--peri-rgb), 0.06) 50%, rgba(var(--fg-rgb), 0.02));
+    border: 1px solid rgba(var(--fg-rgb), 0.12);
+    box-shadow: inset 0 1px 0 rgba(var(--fg-rgb), 0.1);
+  }
+  .intro2 {
+    flex: 1 1 300px;
+    min-width: 0;
+  }
+  .ticks {
+    margin-top: 20px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--text-2);
+    font-size: 15px;
+  }
+  .ticks li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .ticks :global(svg) {
+    color: var(--mint);
+    flex: none;
+    margin-top: 3px;
+  }
+  .small {
+    margin-top: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+    word-break: break-word;
+  }
+  .form {
+    flex: 1 1 420px;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: 14px;
+  }
+  .full {
+    grid-column: 1 / -1;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  label {
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 14px;
+    border-radius: 12px;
+    background: rgba(var(--base-rgb), 0.6);
+    border: 1px solid rgba(var(--fg-rgb), 0.12);
+    color: var(--text);
+    transition: border-color 0.2s;
+  }
+  select {
+    padding: 0 12px;
+  }
+  textarea {
+    padding: 12px 14px;
+    resize: vertical;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--mint);
+  }
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .turnstile:empty {
+    display: none;
+  }
+  .status {
+    min-height: 1.5em;
+    font-size: 14px;
+  }
+  .status[data-kind='ok'] {
+    color: var(--mint);
+  }
+  .status[data-kind='err'] {
+    color: var(--danger);
+  }
+  .fine {
+    font-size: 12px;
+    color: var(--faint);
+  }
+  button:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+</style>

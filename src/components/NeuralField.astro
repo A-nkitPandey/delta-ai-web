@@ -1,7 +1,8 @@
 ---
 /**
  * Decorative "neural network" behind the hero: drifting nodes that link up
- * when close, and reach towards the visitor's finger or cursor.
+ * when close, and reach towards the visitor's finger or cursor. On first load
+ * the nodes briefly gather around the headline ("focus"), then drift free.
  * ~2 KB of script, no libraries. Pauses off-screen, in background tabs and
  * for people who prefer reduced motion (they get one still frame).
  */
@@ -13,7 +14,7 @@
   const canvas = document.querySelector<HTMLCanvasElement>('canvas.neural');
   const ctx = canvas?.getContext('2d');
   if (canvas && ctx) {
-    type Node = { x: number; y: number; vx: number; vy: number; r: number; hue: 0 | 1 };
+    type Node = { x: number; y: number; vx: number; vy: number; r: number; hue: 0 | 1; a: number; ring: number; px: number; py: number };
     const reduce = matchMedia('(prefers-reduced-motion: reduce)');
     const host = canvas.parentElement as HTMLElement;
     let nodes: Node[] = [];
@@ -26,6 +27,10 @@
     let mint = '124, 240, 206';
     let peri = '169, 182, 255';
     let lineAlpha = 0.18;
+    // Focus intro: where the headline sits, and when the intro started.
+    const focus = { x: 0, y: 0 };
+    const INTRO_MS = 2600;
+    let introStart = -1;
 
     const readColours = () => {
       const cs = getComputedStyle(document.documentElement);
@@ -51,13 +56,34 @@
         vy: (Math.random() - 0.5) * 0.28,
         r: 1.2 + Math.random() * 1.6,
         hue: Math.random() < 0.75 ? 0 : 1,
+        a: Math.random() * Math.PI * 2,
+        ring: 0.55 + Math.random() * 0.75,
+        px: 0,
+        py: 0,
       }));
+      const h1 = host.querySelector('h1');
+      if (h1) {
+        const r = h1.getBoundingClientRect();
+        focus.x = r.left + r.width / 2 - rect.left;
+        focus.y = r.top + r.height / 2 - rect.top;
+      } else {
+        focus.x = w / 2;
+        focus.y = h / 3;
+      }
     };
 
     const link = Math.min(150, Math.max(100, window.innerWidth / 9));
 
-    const draw = () => {
+    const draw = (now = 0) => {
       ctx.clearRect(0, 0, w, h);
+      // Intro strength: 0 → 1 → 0 over INTRO_MS (sine ease).
+      let k = 0;
+      if (introStart >= 0) {
+        const p = (now - introStart) / INTRO_MS;
+        if (p >= 1) introStart = -1;
+        else k = Math.sin(Math.PI * Math.max(0, p)) * 0.8;
+      }
+      const radius = Math.min(w, 900) * 0.32;
       for (const n of nodes) {
         n.x += n.vx;
         n.y += n.vy;
@@ -75,26 +101,40 @@
           }
         }
       }
+      for (const n of nodes) {
+        const tx = focus.x + Math.cos(n.a) * radius * n.ring;
+        const ty = focus.y + Math.sin(n.a) * radius * n.ring * 0.55;
+        n.px = n.x + (tx - n.x) * k;
+        n.py = n.y + (ty - n.y) * k;
+        if (k > 0.01) {
+          ctx.strokeStyle = `rgba(${n.hue ? peri : mint}, ${k * lineAlpha * 0.9})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(n.px, n.py);
+          ctx.lineTo(focus.x, focus.y);
+          ctx.stroke();
+        }
+      }
       for (let i = 0; i < nodes.length; i++) {
         const a = nodes[i];
         for (let j = i + 1; j < nodes.length; j++) {
           const b = nodes[j];
-          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          const d = Math.hypot(a.px - b.px, a.py - b.py);
           if (d < link) {
             ctx.strokeStyle = `rgba(${a.hue ? peri : mint}, ${(1 - d / link) * lineAlpha})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
+            ctx.moveTo(a.px, a.py);
+            ctx.lineTo(b.px, b.py);
             ctx.stroke();
           }
         }
         if (pointer.active) {
-          const d = Math.hypot(a.x - pointer.x, a.y - pointer.y);
+          const d = Math.hypot(a.px - pointer.x, a.py - pointer.y);
           if (d < 180) {
             ctx.strokeStyle = `rgba(${mint}, ${(1 - d / 180) * lineAlpha * 2})`;
             ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
+            ctx.moveTo(a.px, a.py);
             ctx.lineTo(pointer.x, pointer.y);
             ctx.stroke();
           }
@@ -103,13 +143,14 @@
       for (const n of nodes) {
         ctx.fillStyle = `rgba(${n.hue ? peri : mint}, 0.75)`;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.arc(n.px, n.py, n.r, 0, Math.PI * 2);
         ctx.fill();
       }
     };
 
-    const loop = () => {
-      draw();
+    const loop = (now: number) => {
+      if (introStart === -2) introStart = now;
+      draw(now);
       raf = requestAnimationFrame(loop);
     };
     const start = () => {
@@ -120,6 +161,8 @@
 
     readColours();
     resize();
+    // Play the focus intro once, only if the hero is on screen at load.
+    if (!reduce.matches && canvas.getBoundingClientRect().top < window.innerHeight * 0.5) introStart = -2;
     start();
 
     new ResizeObserver(() => {
