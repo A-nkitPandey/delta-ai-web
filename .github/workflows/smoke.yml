@@ -1,0 +1,32 @@
+# Manual check of the live site: waits for the latest deploy, then asks the
+# website chat one question. Run from the Actions tab ("Run workflow").
+name: Live smoke test
+on:
+  workflow_dispatch:
+    inputs:
+      question:
+        description: Question for the website chat
+        default: What do you build for salons?
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Wait for the new pages to be live
+        run: |
+          for i in $(seq 1 30); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' https://deltaaiinnovation.in/industries)
+            echo "attempt $i: /industries -> $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 15
+          done
+          exit 1
+      - name: Ask the chat
+        env:
+          Q: ${{ inputs.question }}
+        run: |
+          body=$(jq -n --arg q "$Q" '{messages:[{role:"user",content:$q}]}')
+          curl -s -w '\nHTTP %{http_code}\n' -X POST https://deltaaiinnovation.in/api/chat \
+            -H 'Origin: https://deltaaiinnovation.in' -H 'Content-Type: application/json' -d "$body"
