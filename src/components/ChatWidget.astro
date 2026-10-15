@@ -200,15 +200,15 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     min-height: 52px;
     padding: 0 20px 0 16px;
     border-radius: 999px;
-    border: 1px solid rgba(124, 240, 206, 0.5);
-    background: linear-gradient(160deg, #7cf0ce, #5fd9b6);
-    color: #06231b;
+    border: 1px solid rgba(var(--mint-rgb), 0.5);
+    background: var(--mint);
+    color: var(--mint-ink);
     font-weight: 600;
     font-size: 15px;
     cursor: pointer;
     box-shadow:
-      0 14px 40px rgba(0, 0, 0, 0.45),
-      0 0 0 6px rgba(124, 240, 206, 0.08);
+      0 14px 40px rgba(var(--shadow-rgb), 0.45),
+      0 0 0 6px rgba(var(--mint-rgb), 0.08);
     transition: transform 0.2s;
   }
   .launcher:hover {
@@ -218,7 +218,7 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     position: absolute;
     inset: -1px;
     border-radius: inherit;
-    border: 2px solid rgba(124, 240, 206, 0.6);
+    border: 2px solid rgba(var(--mint-rgb), 0.6);
     animation: ring 2.8s ease-out infinite;
     pointer-events: none;
   }
@@ -249,9 +249,9 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     flex-direction: column;
     border-radius: 24px;
     overflow: hidden;
-    background: #0d1016;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+    background: var(--ink-2);
+    border: 1px solid rgba(var(--fg-rgb), 0.12);
+    box-shadow: 0 30px 90px rgba(var(--shadow-rgb), 0.6);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
@@ -263,8 +263,8 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     align-items: center;
     gap: 12px;
     padding: 16px 16px 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: linear-gradient(135deg, rgba(124, 240, 206, 0.1), transparent 70%);
+    border-bottom: 1px solid rgba(var(--fg-rgb), 0.08);
+    background: linear-gradient(135deg, rgba(var(--mint-rgb), 0.1), transparent 70%);
   }
   .avatar {
     flex: none;
@@ -275,8 +275,8 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     align-items: center;
     justify-content: center;
     color: var(--mint);
-    background: rgba(124, 240, 206, 0.12);
-    border: 1px solid rgba(124, 240, 206, 0.35);
+    background: rgba(var(--mint-rgb), 0.12);
+    border: 1px solid rgba(var(--mint-rgb), 0.35);
   }
   .who {
     flex: 1;
@@ -309,8 +309,8 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     border-radius: 12px;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(var(--fg-rgb), 0.05);
+    border: 1px solid rgba(var(--fg-rgb), 0.1);
     color: var(--text-2);
     cursor: pointer;
   }
@@ -337,21 +337,21 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
   }
   .log :global(.bot) {
     align-self: flex-start;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(var(--fg-rgb), 0.06);
+    border: 1px solid rgba(var(--fg-rgb), 0.08);
     border-bottom-left-radius: 6px;
   }
   .log :global(.user) {
     align-self: flex-end;
-    background: rgba(124, 240, 206, 0.16);
-    border: 1px solid rgba(124, 240, 206, 0.3);
+    background: rgba(var(--mint-rgb), 0.16);
+    border: 1px solid rgba(var(--mint-rgb), 0.3);
     border-bottom-right-radius: 6px;
   }
   .log :global(.err) {
     align-self: flex-start;
-    background: rgba(255, 180, 168, 0.08);
-    border: 1px solid rgba(255, 180, 168, 0.25);
-    color: #ffd2ca;
+    background: rgba(var(--danger-rgb), 0.08);
+    border: 1px solid rgba(var(--danger-rgb), 0.25);
+    color: var(--danger);
   }
   .log :global(.typing) {
     display: inline-flex;
@@ -392,14 +392,14 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     padding: 6px 12px;
     border-radius: 999px;
     background: transparent;
-    border: 1px solid rgba(124, 240, 206, 0.35);
+    border: 1px solid rgba(var(--mint-rgb), 0.35);
     color: var(--mint);
     font-size: 13px;
     cursor: pointer;
     text-align: left;
   }
   .chipbtn:hover {
-    background: rgba(124, 240, 206, 0.08);
+    background: rgba(var(--mint-rgb), 0.08);
   }
   .share {
     padding: 0 16px 10px;
@@ -411,7 +411,7 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     display: flex;
     gap: 8px;
     padding: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(var(--fg-rgb), 0.08);
   }
   .bar input {
     flex: 1;
@@ -419,8 +419,8 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     min-height: 46px;
     padding: 0 14px;
     border-radius: 14px;
-    background: rgba(7, 9, 13, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(var(--base-rgb), 0.7);
+    border: 1px solid rgba(var(--fg-rgb), 0.12);
     color: var(--text);
     font-size: 16px;
   }
@@ -437,7 +437,7 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     align-items: center;
     justify-content: center;
     background: var(--mint);
-    color: #06231b;
+    color: var(--mint-ink);
     border: 0;
     cursor: pointer;
   }

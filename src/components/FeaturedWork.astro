@@ -94,8 +94,8 @@ const projects = (await getCollection('work', ({ data }) => !data.draft && data.
     flex-wrap: wrap;
     border-radius: var(--r-xl);
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(169, 182, 255, 0.1), rgba(255, 255, 255, 0.02) 55%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(var(--peri-rgb), 0.1), rgba(var(--fg-rgb), 0.02) 55%);
+    border: 1px solid rgba(var(--fg-rgb), 0.1);
   }
   .copy {
     flex: 1 1 460px;
@@ -121,8 +121,8 @@ const projects = (await getCollection('work', ({ data }) => !data.draft && data.
   .metric {
     padding: 16px;
     border-radius: 16px;
-    background: rgba(7, 9, 13, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(var(--base-rgb), 0.5);
+    border: 1px solid rgba(var(--fg-rgb), 0.07);
   }
   dd {
     margin: 0;
@@ -159,15 +159,15 @@ const projects = (await getCollection('work', ({ data }) => !data.draft && data.
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(closest-side, rgba(124, 240, 206, 0.12), rgba(124, 240, 206, 0) 75%);
+    background: radial-gradient(closest-side, rgba(var(--mint-rgb), 0.12), rgba(var(--mint-rgb), 0) 75%);
   }
   .phone-wrap :global(.cover) {
     width: 100%;
     max-width: 480px;
     height: auto;
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(var(--fg-rgb), 0.12);
+    box-shadow: 0 40px 100px rgba(var(--shadow-rgb), 0.6);
   }
   .phone {
     width: 260px;
@@ -175,8 +175,8 @@ const projects = (await getCollection('work', ({ data }) => !data.draft && data.
     border-radius: 44px;
     padding: 12px;
     background: #11141b;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(var(--fg-rgb), 0.14);
+    box-shadow: 0 40px 100px rgba(var(--shadow-rgb), 0.6), inset 0 1px 0 rgba(var(--fg-rgb), 0.1);
   }
   .screen {
     height: 100%;

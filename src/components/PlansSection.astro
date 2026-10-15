@@ -50,9 +50,9 @@ const plans = (await getCollection('plans')).sort((a, b) => a.data.order - b.dat
     padding: 32px;
   }
   .hot {
-    background: linear-gradient(180deg, rgba(124, 240, 206, 0.12), rgba(255, 255, 255, 0.03));
-    border-color: rgba(124, 240, 206, 0.35);
-    box-shadow: 0 30px 80px rgba(124, 240, 206, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: linear-gradient(180deg, rgba(var(--mint-rgb), 0.12), rgba(var(--fg-rgb), 0.03));
+    border-color: rgba(var(--mint-rgb), 0.35);
+    box-shadow: 0 30px 80px rgba(var(--mint-rgb), 0.08), inset 0 1px 0 rgba(var(--fg-rgb), 0.1);
   }
   .badge {
     position: absolute;

@@ -301,8 +301,8 @@ const jsonLd = jobs.map(({ data: j }) => ({
     align-items: center;
     justify-content: center;
     color: var(--mint);
-    background: rgba(124, 240, 206, 0.1);
-    border: 1px solid rgba(124, 240, 206, 0.28);
+    background: rgba(var(--mint-rgb), 0.1);
+    border: 1px solid rgba(var(--mint-rgb), 0.28);
   }
   .roles {
     margin-top: 72px;
@@ -344,7 +344,7 @@ const jsonLd = jobs.map(({ data: j }) => ({
   }
   details {
     margin-top: 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(var(--fg-rgb), 0.08);
     padding-top: 12px;
   }
   summary {
@@ -403,9 +403,9 @@ const jsonLd = jobs.map(({ data: j }) => ({
     gap: 40px;
     padding: clamp(24px, 5vw, 56px);
     border-radius: var(--r-xl);
-    background: linear-gradient(160deg, rgba(124, 240, 206, 0.1), rgba(169, 182, 255, 0.06) 50%, rgba(255, 255, 255, 0.02));
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: linear-gradient(160deg, rgba(var(--mint-rgb), 0.1), rgba(var(--peri-rgb), 0.06) 50%, rgba(var(--fg-rgb), 0.02));
+    border: 1px solid rgba(var(--fg-rgb), 0.12);
+    box-shadow: inset 0 1px 0 rgba(var(--fg-rgb), 0.1);
   }
   .intro2 {
     flex: 1 1 300px;
@@ -452,8 +452,8 @@ const jsonLd = jobs.map(({ data: j }) => ({
     min-height: 48px;
     padding: 0 14px;
     border-radius: 12px;
-    background: rgba(7, 9, 13, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(var(--base-rgb), 0.6);
+    border: 1px solid rgba(var(--fg-rgb), 0.12);
     color: var(--text);
     transition: border-color 0.2s;
   }
@@ -488,7 +488,7 @@ const jsonLd = jobs.map(({ data: j }) => ({
     color: var(--mint);
   }
   .status[data-kind='err'] {
-    color: #ffb4a8;
+    color: var(--danger);
   }
   .fine {
     font-size: 12px;

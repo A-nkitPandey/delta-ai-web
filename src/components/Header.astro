@@ -27,7 +27,12 @@ const path = Astro.url.pathname.replace(/\.html$/, '');
         ))
       }
     </ul>
-    <a href="/#contact" class="btn btn--primary btn--sm cta">Start a project</a>
+    <div class="right">
+      <button type="button" class="theme" id="theme-toggle" aria-label="Switch to light theme" title="Switch theme">
+        <Icon name="sun" size={18} strokeWidth={2} class="i-sun" />
+        <Icon name="moon" size={18} strokeWidth={2} class="i-moon" />
+      </button>
+      <a href="/#contact" class="btn btn--primary btn--sm cta">Start a project</a>
 
     <!-- Mobile menu: pure HTML <details>, works with JavaScript off. -->
     <details class="mobile">
@@ -48,6 +53,7 @@ const path = Astro.url.pathname.replace(/\.html$/, '');
         <a href="/#contact" class="btn btn--primary btn--block">Start a project</a>
       </div>
     </details>
+    </div>
   </nav>
 </header>
 
@@ -68,11 +74,11 @@ const path = Astro.url.pathname.replace(/\.html$/, '');
     gap: 16px;
     padding: 10px 12px 10px 18px;
     border-radius: var(--r-md);
-    background: rgba(14, 17, 23, 0.62);
+    background: rgba(var(--base-rgb), 0.62);
     border: 1px solid var(--edge);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), var(--highlight);
+    box-shadow: 0 10px 40px rgba(var(--shadow-rgb), 0.35), var(--highlight);
   }
   .links {
     display: flex;
@@ -97,6 +103,44 @@ const path = Astro.url.pathname.replace(/\.html$/, '');
   }
   .mobile {
     display: none;
+  }
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .theme {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    border: 1px solid var(--edge-2);
+    background: var(--glass-2);
+    color: var(--text-2);
+    cursor: pointer;
+  }
+  .theme:hover {
+    color: var(--text);
+  }
+  /* Show the icon of the theme you'd switch TO. */
+  .theme :global(.i-moon) {
+    display: none;
+  }
+  :global(:root[data-theme='light']) .theme :global(.i-sun) {
+    display: none;
+  }
+  :global(:root[data-theme='light']) .theme :global(.i-moon) {
+    display: block;
+  }
+  @media (prefers-color-scheme: light) {
+    :global(:root:not([data-theme='dark'])) .theme :global(.i-sun) {
+      display: none;
+    }
+    :global(:root:not([data-theme='dark'])) .theme :global(.i-moon) {
+      display: block;
+    }
   }
 
   @media (max-width: 860px) {
@@ -136,11 +180,11 @@ const path = Astro.url.pathname.replace(/\.html$/, '');
       top: calc(100% + 8px);
       padding: 12px;
       border-radius: var(--r-md);
-      background: rgba(14, 17, 23, 0.96);
+      background: rgba(var(--base-rgb), 0.96);
       border: 1px solid var(--edge);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 24px 60px rgba(var(--shadow-rgb), 0.5);
     }
     .sheet ul {
       list-style: none;
@@ -161,3 +205,24 @@ const path = Astro.url.pathname.replace(/\.html$/, '');
     }
   }
 </style>
+
+<script>
+  const btn = document.getElementById('theme-toggle');
+  const root = document.documentElement;
+  const current = () => root.dataset.theme ?? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  const label = () => btn?.setAttribute('aria-label', `Switch to ${current() === 'light' ? 'dark' : 'light'} theme`);
+  label();
+  btn?.addEventListener('click', () => {
+    const next = current() === 'light' ? 'dark' : 'light';
+    root.classList.add('theme-anim');
+    root.dataset.theme = next;
+    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute('content', next === 'light' ? '#f5f7fa' : '#07090d'));
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* storage unavailable: the choice lasts for this page only */
+    }
+    label();
+    setTimeout(() => root.classList.remove('theme-anim'), 350);
+  });
+</script>

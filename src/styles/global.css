@@ -6,23 +6,33 @@
 :root {
   color-scheme: dark;
 
+  /* Colour channels used as rgba(var(--x-rgb), alpha) across components. */
+  --fg-rgb: 255, 255, 255;
+  --mint-rgb: 124, 240, 206;
+  --peri-rgb: 169, 182, 255;
+  --base-rgb: 7, 9, 13;
+  --surface-rgb: 18, 22, 30;
+  --shadow-rgb: 0, 0, 0;
+  --danger-rgb: 255, 180, 168;
+
   --ink: #07090d;
   --ink-2: #0e1117;
   --text: #f4f6fa;
   --text-2: #c9ced8;
   --muted: #a1a8b6;
   --faint: #8a93a3;
+  --danger: #ffb4a8;
 
   --mint: #7cf0ce;
   --mint-hi: #b4f8e4;
   --mint-ink: #06231b;
   --peri: #a9b6ff;
 
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-2: rgba(255, 255, 255, 0.06);
-  --edge: rgba(255, 255, 255, 0.09);
-  --edge-2: rgba(255, 255, 255, 0.14);
-  --highlight: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --glass: rgba(var(--fg-rgb), 0.03);
+  --glass-2: rgba(var(--fg-rgb), 0.06);
+  --edge: rgba(var(--fg-rgb), 0.09);
+  --edge-2: rgba(var(--fg-rgb), 0.14);
+  --highlight: inset 0 1px 0 rgba(var(--fg-rgb), 0.07);
 
   --font-sans: 'Geist Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-serif: 'Instrument Serif', Georgia, serif;
@@ -36,6 +46,82 @@
   --wrap: 1200px;
   --gutter: clamp(16px, 4vw, 24px);
   --section: clamp(72px, 10vw, 112px);
+}
+
+/* Light theme: when chosen, or when the device prefers light and nothing is saved. */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --fg-rgb: 15, 23, 42;
+  --mint-rgb: 11, 132, 102;
+  --peri-rgb: 79, 93, 214;
+  --base-rgb: 255, 255, 255;
+  --surface-rgb: 255, 255, 255;
+  --shadow-rgb: 30, 41, 59;
+  --danger-rgb: 190, 52, 40;
+
+  --ink: #f5f7fa;
+  --ink-2: #ffffff;
+  --text: #0f172a;
+  --text-2: #334155;
+  --muted: #475569;
+  --faint: #5b6577;
+  --danger: #b4231a;
+
+  --mint: #0b8466;
+  --mint-hi: #096c54;
+  --mint-ink: #ffffff;
+  --peri: #4f5dd6;
+
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-2: rgba(255, 255, 255, 0.9);
+  --edge: rgba(15, 23, 42, 0.1);
+  --edge-2: rgba(15, 23, 42, 0.16);
+  --highlight: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    color-scheme: light;
+    --fg-rgb: 15, 23, 42;
+    --mint-rgb: 11, 132, 102;
+    --peri-rgb: 79, 93, 214;
+    --base-rgb: 255, 255, 255;
+    --surface-rgb: 255, 255, 255;
+    --shadow-rgb: 30, 41, 59;
+    --danger-rgb: 190, 52, 40;
+
+    --ink: #f5f7fa;
+    --ink-2: #ffffff;
+    --text: #0f172a;
+    --text-2: #334155;
+    --muted: #475569;
+    --faint: #5b6577;
+    --danger: #b4231a;
+
+    --mint: #0b8466;
+    --mint-hi: #096c54;
+    --mint-ink: #ffffff;
+    --peri: #4f5dd6;
+
+    --glass: rgba(255, 255, 255, 0.72);
+    --glass-2: rgba(255, 255, 255, 0.9);
+    --edge: rgba(15, 23, 42, 0.1);
+    --edge-2: rgba(15, 23, 42, 0.16);
+    --highlight: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+}
+/* Shadows read heavier on light backgrounds; soften them. */
+:root[data-theme='light'] .glass,
+:root[data-theme='light'] .btn--primary {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-anim,
+  html.theme-anim * {
+    transition:
+      background-color 0.3s,
+      color 0.3s,
+      border-color 0.3s !important;
+  }
 }
 
 /* ---------- Base ---------- */
@@ -118,7 +204,7 @@ button {
 }
 
 ::selection {
-  background: rgba(124, 240, 206, 0.3);
+  background: rgba(var(--mint-rgb), 0.3);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -228,14 +314,14 @@ button {
 .btn--primary {
   background: var(--mint);
   color: var(--mint-ink);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3) inset, 0 12px 36px rgba(124, 240, 206, 0.25);
+  box-shadow: 0 0 0 1px rgba(var(--fg-rgb), 0.3) inset, 0 12px 36px rgba(var(--mint-rgb), 0.25);
 }
 .btn--primary:hover {
   color: var(--mint-ink);
   background: var(--mint-hi);
 }
 .btn--ghost {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(var(--fg-rgb), 0.05);
   border-color: var(--edge-2);
   color: var(--text);
   font-weight: 500;
@@ -243,7 +329,7 @@ button {
 }
 .btn--ghost:hover {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(var(--fg-rgb), 0.09);
 }
 .btn--sm {
   min-height: 44px;
@@ -263,8 +349,8 @@ button {
   box-shadow: var(--highlight);
 }
 .glass--tint {
-  background: linear-gradient(180deg, rgba(124, 240, 206, 0.1), rgba(255, 255, 255, 0.02));
-  border-color: rgba(124, 240, 206, 0.22);
+  background: linear-gradient(180deg, rgba(var(--mint-rgb), 0.1), rgba(var(--fg-rgb), 0.02));
+  border-color: rgba(var(--mint-rgb), 0.22);
 }
 
 .chips {
@@ -282,7 +368,7 @@ button {
   line-height: 1.4;
 }
 .chip--mint {
-  background: rgba(124, 240, 206, 0.14);
+  background: rgba(var(--mint-rgb), 0.14);
   color: var(--mint);
 }
 
@@ -294,13 +380,13 @@ button {
   border-radius: 14px;
   align-items: center;
   justify-content: center;
-  background: rgba(169, 182, 255, 0.12);
-  border: 1px solid rgba(169, 182, 255, 0.28);
+  background: rgba(var(--peri-rgb), 0.12);
+  border: 1px solid rgba(var(--peri-rgb), 0.28);
   color: var(--peri);
 }
 .icon-tile--mint {
-  background: rgba(124, 240, 206, 0.14);
-  border-color: rgba(124, 240, 206, 0.3);
+  background: rgba(var(--mint-rgb), 0.14);
+  border-color: rgba(var(--mint-rgb), 0.3);
   color: var(--mint);
 }
 
