@@ -66,7 +66,7 @@ const socials = [
     </nav>
   </div>
   <div class="wrap base">
-    <span>© {year} {site.legalName} · {site.contact.city}</span>
+    <span>© {year} {site.legalName} · {site.contact.city}{site.udyam && <> · MSME registered ({site.udyam})</>}</span>
     <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
   </div>
 </footer>

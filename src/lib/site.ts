@@ -36,6 +36,7 @@ const SiteSchema = z.object({
     instagram: optionalUrl,
   }),
   foundingYear: z.number().int(),
+  udyam: z.string().optional().default(''),
   team: z.object({
     headline: z.string(),
     intro: z.string(),
