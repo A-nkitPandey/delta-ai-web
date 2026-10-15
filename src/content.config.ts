@@ -131,4 +131,24 @@ const jobs = defineCollection({
   }),
 });
 
-export const collections = { services, work, plans, process, security, faq, jobs };
+/** One Markdown file per industry → /industries/<file-name> */
+const industries = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/industries' }),
+  schema: z.object({
+    title: z.string(),
+    headline: z.string(),
+    summary: z.string().max(200),
+    icon: z.string(),
+    order: z.number().default(100),
+    problems: z.array(z.string()).default([]),
+    solutions: z.array(z.object({ title: z.string(), text: z.string() })).default([]),
+    /** Service file names (e.g. booking-queue-saas) shown as related services. */
+    services: z.array(z.string()).default([]),
+    /** Optional case study file name (e.g. salon-token). */
+    work: z.string().optional(),
+    draft: z.boolean().default(false),
+    seo,
+  }),
+});
+
+export const collections = { services, work, plans, process, security, faq, jobs, industries };

@@ -25,6 +25,13 @@ content:
           - { name: label, label: Label, type: string }
           - { name: text, label: Text, type: string }
           - { name: href, label: Link, type: string }
+      - name: hiring
+        label: Hiring banner (shows while a job on Careers is open)
+        type: object
+        fields:
+          - { name: show, label: Show hiring banner, type: boolean }
+          - { name: label, label: Label, type: string }
+          - { name: text, label: Text, type: string }
       - name: hero
         label: Hero
         type: object
@@ -176,3 +183,25 @@ content:
       - { name: open, label: Show on site (open), type: boolean }
       - { name: datePosted, label: Date posted (YYYY-MM-DD), type: string }
       - { name: order, label: Order, type: number }
+  - name: industries
+    label: Industries
+    type: collection
+    path: src/content/industries
+    format: yaml-frontmatter
+    fields:
+      - { name: title, label: Industry name, type: string, required: true }
+      - { name: headline, label: Headline, type: string }
+      - { name: summary, label: Summary (max 200 chars), type: text }
+      - { name: icon, label: Icon (scissors, stethoscope, store, book, ai, apps, payments…), type: string }
+      - { name: order, label: Order, type: number }
+      - { name: problems, label: Problems they face, type: string, list: true }
+      - name: solutions
+        label: What we build
+        type: object
+        list: true
+        fields:
+          - { name: title, label: Title, type: string }
+          - { name: text, label: Text, type: text }
+      - { name: services, label: Related service file names, type: string, list: true }
+      - { name: work, label: Case study file name (optional), type: string }
+      - { name: draft, label: Hide (draft), type: boolean }

@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import IndustryCard from '@/components/IndustryCard.astro';
+import ContactSection from '@/components/ContactSection.astro';
+
+const industries = (await getCollection('industries', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Industries" description="Software and AI for salons, clinics, retail shops and coaching institutes in India — bookings, queues, payments and WhatsApp assistants.">
+  <div class="wrap page">
+    <Breadcrumbs items={[{ name: 'Industries', href: '/industries' }]} />
+    <SectionHeading as="h1" eyebrow="Industries" before="Software that fits" accent="your kind of business" after="." />
+    <p class="lead intro">Every business runs differently. Pick yours to see the everyday problems we solve and what we’d build for you.</p>
+    <div class="grid">
+      {industries.map((i) => <IndustryCard industry={i} />)}
+    </div>
+    <p class="muted note">Don’t see your industry? <a href="/#contact">Tell us how your business works</a> — most of what we build adapts easily.</p>
+  </div>
+  <ContactSection />
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: clamp(40px, 7vw, 72px);
+  }
+  .intro {
+    margin-top: 24px;
+    max-width: 680px;
+  }
+  .grid {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+    gap: 16px;
+  }
+  .note {
+    margin-top: 28px;
+  }
+</style>

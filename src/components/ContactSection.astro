@@ -123,6 +123,16 @@ const whatsapp = site.contact.whatsapp;
     const select = document.getElementById('f-service') as HTMLSelectElement | null;
     if (wanted && select && Array.from(select.options).some((o) => o.value === wanted)) select.value = wanted;
 
+    // A visitor who tapped "Share with our team" in the chat on another page.
+    try {
+      const note = sessionStorage.getItem('delta-chat-note');
+      const box = document.getElementById('f-msg') as HTMLTextAreaElement | null;
+      if (note && box && !box.value.trim()) box.value = note;
+      sessionStorage.removeItem('delta-chat-note');
+    } catch {
+      /* storage unavailable */
+    }
+
     // Render Turnstile once its script has loaded.
     const renderWidget = () => {
       if (!widgetEl || !window.turnstile || widgetId !== undefined) return;

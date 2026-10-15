@@ -1,8 +1,23 @@
 ---
+import { getCollection } from 'astro:content';
 import { site } from '@/lib/site';
 import Icon from './Icon.astro';
 import HeroVisual from './HeroVisual.astro';
-const { hero, announcement, stack } = site;
+const { hero, stack } = site;
+
+// While any role on /careers is open, the hiring banner replaces the usual announcement.
+const openJobs = await getCollection('jobs', ({ data }) => data.open);
+const announcement =
+  site.hiring?.show && openJobs.length > 0 ? { label: site.hiring.label, text: site.hiring.text, href: '/careers' } : site.announcement;
+
+// Trust strip: facts a visitor can check.
+const liveWork = (await getCollection('work', ({ data }) => !data.draft && !!data.url)).sort((a, b) => a.data.order - b.data.order)[0];
+const trust = [
+  site.udyam && { icon: 'shield', title: 'MSME registered', text: site.udyam },
+  { icon: 'check', title: `Based in ${site.contact.city.split(',')[0]}`, text: 'Working with clients across India' },
+  liveWork && { icon: 'spark', title: `Live client: ${liveWork.data.client}`, text: liveWork.data.url!.replace(/^https?:\/\//, ''), href: liveWork.data.url },
+  { icon: 'cloud', title: 'You own everything', text: 'Code, domain and accounts in your name' },
+].filter(Boolean) as { icon: string; title: string; text: string; href?: string }[];
 ---
 
 <section class="hero wrap" aria-labelledby="hero-title">
@@ -33,13 +48,28 @@ const { hero, announcement, stack } = site;
   </div>
 </section>
 
-<section class="clients" aria-label="Clients">
-  <div class="wrap row">
-    <p class="eyebrow faint">Trusted by growing businesses</p>
-    <ul>
-      {site.clients.map((c) => <li>{c}</li>)}
-    </ul>
-  </div>
+<section class="trust" aria-label="Why you can trust us">
+  <ul class="wrap row">
+    {
+      trust.map((t) => (
+        <li>
+          <span class="ti">
+            <Icon name={t.icon} size={18} strokeWidth={2} />
+          </span>
+          <span class="tt">
+            <b>{t.title}</b>
+            {t.href ? (
+              <a href={t.href} rel="noopener" target="_blank">
+                {t.text}
+              </a>
+            ) : (
+              <span>{t.text}</span>
+            )}
+          </span>
+        </li>
+      ))
+    }
+  </ul>
 </section>
 
 <style>
@@ -111,27 +141,53 @@ const { hero, announcement, stack } = site;
   .faint {
     color: var(--faint);
   }
-  .clients {
+  .trust {
     border-block: 1px solid rgba(255, 255, 255, 0.06);
     background: rgba(255, 255, 255, 0.015);
   }
   .row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px 48px;
-    padding-block: 28px;
-  }
-  .clients ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px 44px;
     list-style: none;
-    font-size: 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+    gap: 18px 32px;
+    padding-block: 26px;
+  }
+  .trust li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .ti {
+    flex: none;
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    color: var(--mint);
+    background: rgba(124, 240, 206, 0.08);
+    border: 1px solid rgba(124, 240, 206, 0.22);
+  }
+  .tt {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    font-size: 13px;
+    color: var(--faint);
+  }
+  .tt b {
+    font-size: 14px;
     font-weight: 600;
-    letter-spacing: -0.01em;
-    color: #8790a0;
+    color: var(--text);
+  }
+  .tt a {
+    color: var(--text-2);
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.2);
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
   }
   @media (max-width: 560px) {
     .ctas .btn {

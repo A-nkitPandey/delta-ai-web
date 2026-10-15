@@ -12,6 +12,10 @@ const SiteSchema = z.object({
   announcement: z
     .object({ label: z.string(), text: z.string(), href: z.string() })
     .optional(),
+  /** Shown instead of the announcement while at least one role on /careers is open. */
+  hiring: z
+    .object({ show: z.boolean().default(true), label: z.string().default('HIRING'), text: z.string() })
+    .optional(),
   hero: z.object({
     before: z.string(),
     accent: z.string(),

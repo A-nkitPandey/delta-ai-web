@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHeading from './SectionHeading.astro';
+import IndustryCard from './IndustryCard.astro';
+
+const industries = (await getCollection('industries', ({ data }) => !data.draft)).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section id="industries" class="section wrap" aria-labelledby="industries-title">
+  <SectionHeading id="industries-title" eyebrow="Who we help" before="Built for how" accent="your business" after=" actually runs." />
+  <div class="grid">
+    {industries.map((i) => <IndustryCard industry={i} />)}
+  </div>
+</section>
+
+<style>
+  .grid {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+    gap: 16px;
+  }
+</style>

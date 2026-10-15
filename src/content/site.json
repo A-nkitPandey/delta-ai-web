@@ -8,6 +8,11 @@
     "text": "AI agents for Indian SMBs — now taking projects",
     "href": "/#contact"
   },
+  "hiring": {
+    "show": true,
+    "label": "HIRING",
+    "text": "We're hiring 20 interns — remote, apply in 2 minutes"
+  },
   "hero": {
     "before": "We build software that",
     "accent": "thinks",

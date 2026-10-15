@@ -21,8 +21,19 @@
     "CONTACT_FROM_EMAIL": "Delta AI Website <website@deltaaiinnovation.in>",
     // Address the website sends from, and the verified inbox that receives enquiries.
     "CONTACT_SENDER": "website@deltaaiinnovation.in",
-    "CONTACT_NOTIFY_TO": "pandey.ankt97@gmail.com"
+    "CONTACT_NOTIFY_TO": "pandey.ankt97@gmail.com",
+    // Chat model (Workers AI). Fallbacks are tried in order if this one fails.
+    "CHAT_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
   },
+
+  // "Ask Delta" website chat. Workers AI runs on Cloudflare's free daily
+  // allowance; on the free plan requests simply stop (no bill) once it's used.
+  "ai": { "binding": "AI" },
+
+  // Per-visitor limit for the chat: 8 messages a minute.
+  "ratelimits": [
+    { "name": "CHAT_LIMITER", "namespace_id": "1001", "simple": { "limit": 8, "period": 60 } }
+  ],
 
   // Contact-form notifications. Free: Cloudflare Email Routing can send to
   // a destination address that is already verified on this account.
