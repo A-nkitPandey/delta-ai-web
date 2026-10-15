@@ -1,0 +1,165 @@
+---
+/**
+ * Decorative "neural network" behind the hero: drifting nodes that link up
+ * when close, and reach towards the visitor's finger or cursor.
+ * ~2 KB of script, no libraries. Pauses off-screen, in background tabs and
+ * for people who prefer reduced motion (they get one still frame).
+ */
+---
+
+<canvas class="neural" aria-hidden="true"></canvas>
+
+<script>
+  const canvas = document.querySelector<HTMLCanvasElement>('canvas.neural');
+  const ctx = canvas?.getContext('2d');
+  if (canvas && ctx) {
+    type Node = { x: number; y: number; vx: number; vy: number; r: number; hue: 0 | 1 };
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    const host = canvas.parentElement as HTMLElement;
+    let nodes: Node[] = [];
+    let w = 0;
+    let h = 0;
+    let dpr = 1;
+    let raf = 0;
+    let visible = true;
+    const pointer = { x: -9999, y: -9999, active: false };
+    let mint = '124, 240, 206';
+    let peri = '169, 182, 255';
+    let lineAlpha = 0.18;
+
+    const readColours = () => {
+      const cs = getComputedStyle(document.documentElement);
+      mint = cs.getPropertyValue('--mint-rgb').trim() || mint;
+      peri = cs.getPropertyValue('--peri-rgb').trim() || peri;
+      const light = cs.getPropertyValue('color-scheme').includes('light');
+      lineAlpha = light ? 0.22 : 0.18;
+    };
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = rect.width;
+      h = rect.height;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const target = Math.max(18, Math.min(70, Math.round((w * h) / 16000)));
+      nodes = Array.from({ length: target }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.28,
+        vy: (Math.random() - 0.5) * 0.28,
+        r: 1.2 + Math.random() * 1.6,
+        hue: Math.random() < 0.75 ? 0 : 1,
+      }));
+    };
+
+    const link = Math.min(150, Math.max(100, window.innerWidth / 9));
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      for (const n of nodes) {
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < -20) n.x = w + 20;
+        if (n.x > w + 20) n.x = -20;
+        if (n.y < -20) n.y = h + 20;
+        if (n.y > h + 20) n.y = -20;
+        if (pointer.active) {
+          const dx = pointer.x - n.x;
+          const dy = pointer.y - n.y;
+          const d = Math.hypot(dx, dy);
+          if (d < 180 && d > 0.1) {
+            n.x += (dx / d) * 0.25;
+            n.y += (dy / d) * 0.25;
+          }
+        }
+      }
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < link) {
+            ctx.strokeStyle = `rgba(${a.hue ? peri : mint}, ${(1 - d / link) * lineAlpha})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+        if (pointer.active) {
+          const d = Math.hypot(a.x - pointer.x, a.y - pointer.y);
+          if (d < 180) {
+            ctx.strokeStyle = `rgba(${mint}, ${(1 - d / 180) * lineAlpha * 2})`;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(pointer.x, pointer.y);
+            ctx.stroke();
+          }
+        }
+      }
+      for (const n of nodes) {
+        ctx.fillStyle = `rgba(${n.hue ? peri : mint}, 0.75)`;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    };
+
+    const loop = () => {
+      draw();
+      raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      cancelAnimationFrame(raf);
+      if (reduce.matches) draw();
+      else if (visible && !document.hidden) raf = requestAnimationFrame(loop);
+    };
+
+    readColours();
+    resize();
+    start();
+
+    new ResizeObserver(() => {
+      resize();
+      if (reduce.matches) draw();
+    }).observe(canvas);
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      start();
+    }).observe(canvas);
+    document.addEventListener('visibilitychange', start);
+    reduce.addEventListener('change', start);
+    // Theme switch or device theme change: pick up the new colours.
+    new MutationObserver(readColours).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    matchMedia('(prefers-color-scheme: light)').addEventListener('change', readColours);
+
+    const move = (e: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = e.clientX - rect.left;
+      pointer.y = e.clientY - rect.top;
+      pointer.active = pointer.y > 0 && pointer.y < rect.height;
+    };
+    host.addEventListener('pointermove', move, { passive: true });
+    host.addEventListener('pointerdown', move, { passive: true });
+    host.addEventListener('pointerleave', () => (pointer.active = false));
+  }
+</script>
+
+<style>
+  .neural {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 100vw;
+    height: 100%;
+    transform: translateX(-50%);
+    z-index: -1;
+    pointer-events: none;
+    /* Fade the edges so the network melts into the page. */
+    -webkit-mask-image: radial-gradient(ellipse 80% 75% at 50% 40%, #000 45%, transparent 100%);
+    mask-image: radial-gradient(ellipse 80% 75% at 50% 40%, #000 45%, transparent 100%);
+  }
+</style>

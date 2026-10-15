@@ -40,7 +40,7 @@ const more = all.filter((p) => !p.data.featured);
                 {p.data.metrics.map((m) => (
                   <div class="metric">
                     <dt class="sr-only">{m.label}</dt>
-                    <dd class="value">{m.value}</dd>
+                    <dd class="value" data-count={/^~?\d+$/.test(m.value) ? m.value : undefined}>{m.value}</dd>
                     <dd class="label">{m.label}</dd>
                   </div>
                 ))}

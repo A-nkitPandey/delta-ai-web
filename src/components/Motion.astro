@@ -1,0 +1,83 @@
+---
+/**
+ * Site-wide motion, all in one small script:
+ * - cards and headings fade up as they scroll into view (with a stagger)
+ * - numbers marked data-count count up once
+ * - a soft glow follows the cursor or finger across glass cards
+ * Everything is skipped for people who prefer reduced motion, and the page
+ * looks complete without JavaScript (nothing is hidden until the script runs).
+ */
+---
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.documentElement;
+
+  if (!reduce && 'IntersectionObserver' in window) {
+    // ---- Reveal on scroll ----
+    const targets = document.querySelectorAll<HTMLElement>('main .glass, main .heading, main .feature, main .trust li, main .prose > h2');
+    root.classList.add('js-reveal');
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+    );
+    targets.forEach((el) => {
+      // Stagger siblings in the same grid or list.
+      const parent = el.parentElement;
+      if (parent) {
+        const index = Array.prototype.indexOf.call(parent.children, el);
+        el.style.setProperty('--reveal-delay', `${Math.min(index, 5) * 70}ms`);
+      }
+      el.classList.add('reveal');
+      io.observe(el);
+    });
+
+    // ---- Count-up numbers ----
+    const counters = document.querySelectorAll<HTMLElement>('[data-count]');
+    const co = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          co.unobserve(e.target);
+          const el = e.target as HTMLElement;
+          const raw = el.dataset.count ?? '';
+          const prefix = raw.match(/^\D*/)?.[0] ?? '';
+          const target = Number(raw.slice(prefix.length));
+          if (!Number.isFinite(target)) continue;
+          const start = performance.now();
+          const dur = 1200;
+          const tick = (t: number) => {
+            const p = Math.min(1, (t - start) / dur);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = prefix + Math.round(target * eased).toLocaleString('en-IN');
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.6 },
+    );
+    counters.forEach((el) => co.observe(el));
+
+    // ---- Cursor / finger spotlight on cards ----
+    let last: HTMLElement | null = null;
+    const spot = (e: PointerEvent) => {
+      const card = (e.target as Element | null)?.closest?.<HTMLElement>('.glass, .feature');
+      if (last && last !== card) last.classList.remove('lit');
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      card.style.setProperty('--my', `${e.clientY - r.top}px`);
+      card.classList.add('lit');
+      last = card;
+    };
+    document.addEventListener('pointermove', spot, { passive: true });
+    document.addEventListener('pointerdown', spot, { passive: true });
+  }
+</script>

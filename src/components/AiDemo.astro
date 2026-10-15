@@ -1,0 +1,330 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+
+const samples = [
+  { label: 'Salon · Hinglish', text: 'bhai kal 5 baje haircut + beard karna hai, naam Rahul, 2 log aayenge' },
+  { label: 'Clinic · English', text: 'Hi, can I see the dentist on Saturday morning? Tooth pain since yesterday. I’m Priya, 98xxxxxx21' },
+  { label: 'Restaurant · हिंदी', text: 'नमस्ते, आज रात 8 बजे 4 लोगों के लिए टेबल चाहिए, नाम अमित' },
+];
+const labels: Record<string, string> = { name: 'Name', service: 'Service', date: 'Date', time: 'Time', people: 'People', phone: 'Phone', language: 'Language' };
+---
+
+<section id="try-ai" class="section wrap" aria-labelledby="try-title">
+  <div class="layout">
+    <div class="intro">
+      <SectionHeading id="try-title" eyebrow="Try our AI · live" before="Messy WhatsApp message in." accent="Clean booking out." />
+      <p class="lead">
+        Paste any customer message — English, Hindi or Hinglish. Our AI reads it, fills in the booking and drafts a reply in the customer’s own language. This is
+        the same kind of assistant we build for salons, clinics and restaurants.
+      </p>
+      <ul class="ticks">
+        <li><Icon name="check" size={16} strokeWidth={2} /> Understands “kal 5 baje” and “आज रात 8 बजे”</li>
+        <li><Icon name="check" size={16} strokeWidth={2} /> Spots what’s missing and asks for it</li>
+        <li><Icon name="check" size={16} strokeWidth={2} /> Nothing you type is stored</li>
+      </ul>
+    </div>
+
+    <div class="glass demo" data-labels={JSON.stringify(labels)}>
+      <div class="samples" role="group" aria-label="Example messages">
+        {
+          samples.map((s) => (
+            <button type="button" class="sample" data-text={s.text}>
+              {s.label}
+            </button>
+          ))
+        }
+      </div>
+      <form id="demo-form" autocomplete="off">
+        <label for="demo-text" class="lbl">Customer’s message</label>
+        <textarea id="demo-text" rows="3" maxlength="400" required>{samples[0].text}</textarea>
+        <button type="submit" class="btn btn--primary btn--block" id="demo-go">
+          <Icon name="spark" size={18} strokeWidth={2} /> Turn into a booking
+        </button>
+      </form>
+
+      <div class="result" id="demo-result" aria-live="polite" hidden>
+        <div class="rhead">
+          <span class="eyebrow">Booking</span>
+          <span class="took" id="demo-took"></span>
+        </div>
+        <dl class="fields" id="demo-fields"></dl>
+        <p class="missing" id="demo-missing" hidden></p>
+        <div class="reply">
+          <span class="who"><span class="wa"></span>AI reply on WhatsApp</span>
+          <p id="demo-reply"></p>
+        </div>
+      </div>
+      <p class="err" id="demo-err" role="alert" hidden></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const box = document.querySelector<HTMLElement>('.demo');
+  const form = document.getElementById('demo-form') as HTMLFormElement | null;
+  if (box && form) {
+    const text = document.getElementById('demo-text') as HTMLTextAreaElement;
+    const go = document.getElementById('demo-go') as HTMLButtonElement;
+    const result = document.getElementById('demo-result') as HTMLElement;
+    const fields = document.getElementById('demo-fields') as HTMLElement;
+    const missing = document.getElementById('demo-missing') as HTMLElement;
+    const reply = document.getElementById('demo-reply') as HTMLElement;
+    const took = document.getElementById('demo-took') as HTMLElement;
+    const err = document.getElementById('demo-err') as HTMLElement;
+    const labels = JSON.parse(box.dataset.labels || '{}') as Record<string, string>;
+    const goLabel = go.innerHTML;
+
+    box.querySelectorAll<HTMLButtonElement>('.sample').forEach((b) =>
+      b.addEventListener('click', () => {
+        text.value = b.dataset.text ?? '';
+        form.requestSubmit();
+      }),
+    );
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const value = text.value.trim();
+      if (value.length < 5) return;
+      err.hidden = true;
+      go.disabled = true;
+      go.textContent = 'Reading the message…';
+      box.classList.add('thinking');
+      const t0 = performance.now();
+      try {
+        const res = await fetch('/api/extract', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: value }),
+        });
+        const data = (await res.json().catch(() => ({}))) as {
+          booking?: Record<string, string>;
+          missing?: string[];
+          reply?: string;
+          message?: string;
+        };
+        if (!res.ok || !data.booking) throw new Error(data.message || 'The demo is busy — please try again.');
+        fields.replaceChildren();
+        let i = 0;
+        for (const [k, label] of Object.entries(labels)) {
+          const v = data.booking[k];
+          if (!v) continue;
+          const row = document.createElement('div');
+          row.className = 'field';
+          row.style.setProperty('--i', String(i++));
+          const dt = document.createElement('dt');
+          dt.textContent = label;
+          const dd = document.createElement('dd');
+          dd.textContent = v;
+          row.appendChild(dt);
+          row.appendChild(dd);
+          fields.appendChild(row);
+        }
+        if (data.missing && data.missing.length) {
+          missing.textContent = `Still needed: ${data.missing.join(', ')}`;
+          missing.hidden = false;
+        } else missing.hidden = true;
+        reply.textContent = data.reply || '';
+        took.textContent = `${((performance.now() - t0) / 1000).toFixed(1)}s`;
+        result.hidden = false;
+        result.classList.remove('show');
+        void result.offsetWidth;
+        result.classList.add('show');
+      } catch (ex) {
+        err.textContent = ex instanceof Error ? ex.message : 'Something went wrong.';
+        err.hidden = false;
+      } finally {
+        go.disabled = false;
+        go.innerHTML = goLabel;
+        box.classList.remove('thinking');
+      }
+    });
+  }
+</script>
+
+<style>
+  .layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: flex-start;
+  }
+  .intro {
+    flex: 1 1 340px;
+    min-width: 0;
+  }
+  .lead {
+    margin-top: 20px;
+    max-width: 480px;
+  }
+  .ticks {
+    margin-top: 22px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--text-2);
+    font-size: 15px;
+  }
+  .ticks li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ticks :global(svg) {
+    color: var(--mint);
+    flex: none;
+  }
+  .demo {
+    flex: 1 1 420px;
+    min-width: 0;
+    padding: clamp(18px, 3vw, 28px);
+    border-radius: var(--r-xl);
+    background: linear-gradient(160deg, rgba(var(--mint-rgb), 0.08), rgba(var(--peri-rgb), 0.05) 60%, var(--glass));
+  }
+  .demo.thinking {
+    animation: think 1.4s ease-in-out infinite;
+  }
+  @keyframes think {
+    50% {
+      box-shadow:
+        0 0 0 1px rgba(var(--mint-rgb), 0.45),
+        0 0 40px rgba(var(--mint-rgb), 0.18);
+    }
+  }
+  .samples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sample {
+    min-height: 36px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--mint-rgb), 0.35);
+    background: transparent;
+    color: var(--mint);
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .sample:hover {
+    background: rgba(var(--mint-rgb), 0.08);
+  }
+  form {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lbl {
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(var(--base-rgb), 0.6);
+    border: 1px solid rgba(var(--fg-rgb), 0.12);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.5;
+    resize: vertical;
+  }
+  textarea:focus {
+    outline: none;
+    border-color: var(--mint);
+  }
+  #demo-go:disabled {
+    opacity: 0.75;
+    cursor: progress;
+  }
+  .result {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(var(--fg-rgb), 0.08);
+  }
+  .rhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .took {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--faint);
+  }
+  .fields {
+    margin: 12px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+    gap: 8px;
+  }
+  .fields :global(.field) {
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(var(--base-rgb), 0.45);
+    border: 1px solid rgba(var(--fg-rgb), 0.07);
+  }
+  .result.show :global(.field) {
+    animation: pop 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--i) * 80ms);
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+  }
+  .fields :global(dt) {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .fields :global(dd) {
+    margin: 4px 0 0;
+    font-weight: 600;
+    font-size: 15px;
+    overflow-wrap: anywhere;
+  }
+  .missing {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--peri);
+  }
+  .reply {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border-bottom-right-radius: 4px;
+    background: rgba(var(--mint-rgb), 0.12);
+    border: 1px solid rgba(var(--mint-rgb), 0.28);
+  }
+  .who {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--faint);
+  }
+  .wa {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #25d366;
+  }
+  .reply p {
+    margin-top: 6px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .err {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--danger);
+  }
+</style>

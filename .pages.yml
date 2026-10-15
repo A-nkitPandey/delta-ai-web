@@ -38,6 +38,7 @@ content:
         fields:
           - { name: before, label: Headline before accent, type: string }
           - { name: accent, label: Accent word (italic), type: string }
+          - { name: rotate, label: Words the accent cycles through (optional), type: string, list: true }
           - { name: after, label: Headline after accent, type: string }
           - { name: intro, label: Intro, type: text }
           - { name: primaryCta, label: Primary button, type: string }

@@ -4,6 +4,7 @@ import Seo, { type SeoProps } from '@/components/Seo.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import ChatWidget from '@/components/ChatWidget.astro';
+import Motion from '@/components/Motion.astro';
 
 type Props = SeoProps;
 const seo = Astro.props;
@@ -48,6 +49,7 @@ const seo = Astro.props;
     </main>
     <Footer />
     <ChatWidget />
+    <Motion />
   </body>
 </html>
 
@@ -83,5 +85,29 @@ const seo = Astro.props;
   }
   main {
     position: relative;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .glow--a {
+      animation: aurora-a 22s ease-in-out infinite alternate;
+    }
+    .glow--b {
+      animation: aurora-b 28s ease-in-out infinite alternate;
+    }
+  }
+  @keyframes aurora-a {
+    from {
+      transform: translateX(-50%) scale(1);
+    }
+    to {
+      transform: translateX(-42%) scale(1.12) rotate(6deg);
+    }
+  }
+  @keyframes aurora-b {
+    from {
+      transform: translate(0, 0) scale(1);
+    }
+    to {
+      transform: translate(-140px, 120px) scale(1.2);
+    }
   }
 </style>

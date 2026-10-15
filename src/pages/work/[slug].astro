@@ -83,7 +83,7 @@ const jsonLd = [
           {d.metrics.map((m) => (
             <div class="glass metric">
               <dt class="label">{m.label}</dt>
-              <dd class="value">{m.value}</dd>
+              <dd class="value" data-count={/^~?\d+$/.test(m.value) ? m.value : undefined}>{m.value}</dd>
             </div>
           ))}
         </dl>

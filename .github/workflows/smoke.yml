@@ -7,6 +7,9 @@ on:
       question:
         description: Question for the website chat
         default: What do you build for salons?
+      demo:
+        description: Message for the "Try our AI" demo (optional)
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -34,4 +37,16 @@ jobs:
           echo "HTTP $code"; echo "$json"
           text=$(echo "$json" | jq -r '.reply // .message' | tr '\n' ' ')
           echo "::notice title=Chat HTTP $code::$text"
+          [ "$code" = "200" ]
+      - name: Try the AI demo
+        if: ${{ inputs.demo != '' }}
+        env:
+          T: ${{ inputs.demo }}
+        run: |
+          body=$(jq -n --arg t "$T" '{text:$t}')
+          out=$(curl -s -w '\n%{http_code}' -X POST https://deltaaiinnovation.in/api/extract \
+            -H 'Origin: https://deltaaiinnovation.in' -H 'Content-Type: application/json' -d "$body")
+          code=$(echo "$out" | tail -n1); json=$(echo "$out" | sed '$d')
+          echo "HTTP $code"; echo "$json"
+          echo "::notice title=Demo HTTP $code::$(echo "$json" | tr '\n' ' ')"
           [ "$code" = "200" ]

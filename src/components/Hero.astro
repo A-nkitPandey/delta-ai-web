@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import { site } from '@/lib/site';
 import Icon from './Icon.astro';
 import HeroVisual from './HeroVisual.astro';
+import NeuralField from './NeuralField.astro';
 const { hero, stack } = site;
 
 // While any role on /careers is open, the hiring banner replaces the usual announcement.
@@ -21,6 +22,7 @@ const trust = [
 ---
 
 <section class="hero wrap" aria-labelledby="hero-title">
+  <NeuralField />
   <div class="copy">
     {
       announcement && (
@@ -31,7 +33,10 @@ const trust = [
       )
     }
     <h1 id="hero-title">
-      {hero.before} <span class="accent accent--mint">{hero.accent}</span>{hero.after}
+      {hero.before}{' '}
+      <span class="accent accent--mint rot" data-words={JSON.stringify(hero.rotate)}>
+        <span class="sr-only">{hero.accent}</span><span class="rot-text" aria-hidden="true">{hero.accent}</span><span class="caret" aria-hidden="true"></span>
+      </span>{hero.after}
     </h1>
     <p class="lead intro">{hero.intro}</p>
     <div class="ctas">
@@ -74,6 +79,8 @@ const trust = [
 
 <style>
   .hero {
+    position: relative;
+    isolation: isolate;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -194,4 +201,57 @@ const trust = [
       width: 100%;
     }
   }
+  .caret {
+    display: none;
+    width: 0.06em;
+    height: 0.85em;
+    margin-left: 0.04em;
+    vertical-align: -0.05em;
+    background: currentColor;
+    animation: blink-caret 1s steps(1) infinite;
+  }
+  .rot.typing .caret {
+    display: inline-block;
+  }
+  @keyframes blink-caret {
+    50% {
+      opacity: 0;
+    }
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
 </style>
+
+<script>
+  // Type out the hero's accent word: thinks → talks → sells → scales.
+  const rot = document.querySelector<HTMLElement>('.rot');
+  const out = rot?.querySelector<HTMLElement>('.rot-text');
+  const words: string[] = rot ? JSON.parse(rot.dataset.words || '[]') : [];
+  if (rot && out && words.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    rot.classList.add('typing');
+    let i = 0;
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    const run = async () => {
+      for (;;) {
+        await wait(2400);
+        const word = out.textContent ?? '';
+        for (let n = word.length; n > 0; n--) {
+          out.textContent = word.slice(0, n - 1);
+          await wait(45);
+        }
+        i = (i + 1) % words.length;
+        for (let n = 1; n <= words[i].length; n++) {
+          out.textContent = words[i].slice(0, n);
+          await wait(85);
+        }
+      }
+    };
+    run();
+  }
+</script>

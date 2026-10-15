@@ -19,6 +19,8 @@ const SiteSchema = z.object({
   hero: z.object({
     before: z.string(),
     accent: z.string(),
+    /** Optional words the accent cycles through (first one should match accent). */
+    rotate: z.array(z.string()).default([]),
     after: z.string(),
     intro: z.string(),
     primaryCta: z.string(),

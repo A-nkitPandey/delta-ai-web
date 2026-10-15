@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/Hero.astro';
 import ServicesSection from '@/components/ServicesSection.astro';
 import IndustriesSection from '@/components/IndustriesSection.astro';
+import AiDemo from '@/components/AiDemo.astro';
 import FeaturedWork from '@/components/FeaturedWork.astro';
 import ProcessSection from '@/components/ProcessSection.astro';
 import SecuritySection from '@/components/SecuritySection.astro';
@@ -48,6 +49,7 @@ const jsonLd = [
 <BaseLayout jsonLd={jsonLd}>
   <Hero />
   <ServicesSection />
+  <AiDemo />
   <IndustriesSection />
   <FeaturedWork />
   <ProcessSection />

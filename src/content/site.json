@@ -16,6 +16,7 @@
   "hero": {
     "before": "We build software that",
     "accent": "thinks",
+    "rotate": ["thinks", "talks", "sells", "scales"],
     "after": ", ships and stays secure.",
     "intro": "Delta AI designs, builds and supports AI-powered web apps, business systems and payment-ready platforms — from first sketch to round-the-clock care.",
     "primaryCta": "Book a discovery call",

@@ -15,9 +15,16 @@ import Icon from './Icon.astro';
       </div>
       <span class="live"><span class="dot"></span>Live queue</span>
     </div>
+    <!-- A 10-second looping story: a customer asks on WhatsApp, the AI books a token. Pure CSS. -->
+    <div class="convo">
+      <div class="who-line"><span class="wa"></span>WhatsApp · AI assistant</div>
+      <div class="bubble in b1">Kitna wait hai? 2 log, haircut 💇</div>
+      <div class="bubble out typing-b"><span></span><span></span><span></span></div>
+      <div class="bubble out b2">~25 min. Token <b>#17</b> booked ✅ We’ll ping you 10 min before.</div>
+    </div>
     <div class="panel">
       <div class="mono label">NOW SERVING</div>
-      <div class="serving"><span class="num">#14</span><span class="muted small">Your token: <b>#17</b></span></div>
+      <div class="serving"><span class="num">#14</span><span class="muted small mine">Your token: <b>#17</b></span></div>
       <div class="track"><div class="fill"></div></div>
       <div class="row small"><span class="muted">Approx. wait</span><span>~ 25 min</span></div>
     </div>
@@ -26,7 +33,6 @@ import Icon from './Icon.astro';
       <div class="tile"><div class="small faint">Arrive by</div><b>11:40 AM</b></div>
     </div>
     <div class="float float--a"><Icon name="shield" size={18} strokeWidth={2} class="c-mint" />Secure payments · spam-protected</div>
-    <div class="float float--b"><Icon name="spark" size={18} strokeWidth={2} class="c-peri" />AI replying on WhatsApp</div>
   </div>
 </div>
 
@@ -194,9 +200,6 @@ import Icon from './Icon.astro';
     .float--a {
       left: 8px;
     }
-    .stage {
-      padding-top: 52px;
-    }
     .float {
       font-size: 12px;
       padding: 10px 14px;
@@ -204,6 +207,180 @@ import Icon from './Icon.astro';
     .float--b {
       right: 8px;
       top: -36px;
+    }
+  }
+  /* ---------- WhatsApp → AI → token story (10s loop) ---------- */
+  .convo {
+    position: relative;
+    height: 128px;
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 16px;
+    background: rgba(var(--base-rgb), 0.45);
+    border: 1px solid rgba(var(--fg-rgb), 0.07);
+    overflow: hidden;
+  }
+  .who-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--faint);
+  }
+  .wa {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #25d366;
+  }
+  .bubble {
+    position: absolute;
+    max-width: 82%;
+    padding: 7px 11px;
+    border-radius: 14px;
+    font-size: 12.5px;
+    line-height: 1.4;
+    opacity: 0;
+  }
+  .bubble.in {
+    left: 12px;
+    top: 34px;
+    background: rgba(var(--fg-rgb), 0.08);
+    border-bottom-left-radius: 4px;
+  }
+  .bubble.out {
+    right: 12px;
+    top: 72px;
+    background: rgba(var(--mint-rgb), 0.16);
+    border: 1px solid rgba(var(--mint-rgb), 0.3);
+    border-bottom-right-radius: 4px;
+  }
+  .typing-b {
+    display: inline-flex;
+    gap: 4px;
+    padding: 10px 12px;
+  }
+  .typing-b span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text-2);
+    animation: tdot 1s infinite ease-in-out;
+  }
+  .typing-b span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .typing-b span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  @keyframes tdot {
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .b1 {
+      animation: s-b1 10s infinite;
+    }
+    .typing-b {
+      animation: s-typing 10s infinite;
+    }
+    .b2 {
+      animation: s-b2 10s infinite;
+    }
+    .mine b {
+      animation: s-mine 10s infinite;
+    }
+    .fill {
+      animation: s-fill 10s infinite;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .b1,
+    .b2 {
+      opacity: 1;
+    }
+  }
+  @keyframes s-b1 {
+    0%,
+    6% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    10%,
+    90% {
+      opacity: 1;
+      transform: none;
+    }
+    96%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes s-typing {
+    0%,
+    16% {
+      opacity: 0;
+    }
+    18%,
+    30% {
+      opacity: 1;
+    }
+    32%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes s-b2 {
+    0%,
+    31% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    35%,
+    90% {
+      opacity: 1;
+      transform: none;
+    }
+    96%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes s-mine {
+    0%,
+    34% {
+      color: var(--text);
+      text-shadow: none;
+    }
+    38%,
+    60% {
+      color: var(--mint);
+      text-shadow: 0 0 12px rgba(var(--mint-rgb), 0.7);
+    }
+    70%,
+    100% {
+      color: var(--text);
+      text-shadow: none;
+    }
+  }
+  @keyframes s-fill {
+    0%,
+    40% {
+      width: 55%;
+    }
+    60%,
+    92% {
+      width: 66%;
+    }
+    100% {
+      width: 55%;
     }
   }
 </style>

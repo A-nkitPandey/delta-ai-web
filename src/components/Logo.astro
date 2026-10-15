@@ -9,8 +9,8 @@ const { compact = false } = Astro.props;
 <a href="/" class="logo" aria-label={`${site.name} — home`}>
   <span class="mark">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
-      <path d="M12 3 L21.5 20 H2.5 Z"></path>
-      <path d="M12 10 L16 17 H8 Z"></path>
+      <path class="draw d1" pathLength="1" d="M12 3 L21.5 20 H2.5 Z"></path>
+      <path class="draw d2" pathLength="1" d="M12 10 L16 17 H8 Z"></path>
     </svg>
   </span>
   <span class="word">Delta{!compact && <span class="sub"> AI</span>}</span>
@@ -47,5 +47,26 @@ const { compact = false } = Astro.props;
   .sub {
     color: var(--muted);
     font-weight: 400;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .draw {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: draw 1.1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+    }
+    .d2 {
+      animation-delay: 0.55s;
+    }
+    .logo:hover .draw {
+      animation: draw 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+  }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
   }
 </style>
