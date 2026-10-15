@@ -1,6 +1,6 @@
 [
   { "id": "auth", "title": "Strong sign-in", "text": "Passkeys, OTP and short-lived tokens.", "order": 1 },
-  { "id": "headers", "title": "Hardened headers", "text": "CSP, HSTS, secure cookies, WAF.", "order": 2 },
+  { "id": "headers", "title": "Attack protection", "text": "Blocks common attacks and spam bots out of the box.", "order": 2 },
   { "id": "secrets", "title": "Secrets in a vault", "text": "Never in code, rotated on schedule.", "order": 3 },
   { "id": "scanning", "title": "Automated scanning", "text": "Dependencies and code checked on every push.", "order": 4 },
   { "id": "abuse", "title": "Abuse protection", "text": "Rate limits and bot checks on forms.", "order": 5 },

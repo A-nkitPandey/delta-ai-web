@@ -2,7 +2,7 @@
 title: Payment Integrations
 summary: UPI, Razorpay, Paytm and Easebuzz checkouts with signed callbacks, smart gateway routing and reconciliation.
 icon: payments
-tags: [UPI, Webhooks]
+tags: [UPI, Auto-reconciliation]
 order: 3
 deliverables:
   - Hosted checkout with UPI, cards, wallets and net banking

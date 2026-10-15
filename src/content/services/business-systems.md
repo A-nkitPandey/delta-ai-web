@@ -2,7 +2,7 @@
 title: Business Systems
 summary: HR and employee management, inventory, CRM and dashboards with role-based access and audit trails.
 icon: systems
-tags: [RBAC, Reports]
+tags: [Staff access, Reports]
 order: 5
 deliverables:
   - Employee, attendance and leave management

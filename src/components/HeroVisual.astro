@@ -25,8 +25,8 @@ import Icon from './Icon.astro';
       <div class="tile"><div class="small faint">Next up</div><b>#15 · #16</b></div>
       <div class="tile"><div class="small faint">Arrive by</div><b>11:40 AM</b></div>
     </div>
-    <div class="float float--a"><Icon name="shield" size={18} strokeWidth={2} class="c-mint" />CSP · HSTS · rate-limited</div>
-    <div class="float float--b"><Icon name="spark" size={18} strokeWidth={2} class="c-peri" />AI assistant · replying on WhatsApp</div>
+    <div class="float float--a"><Icon name="shield" size={18} strokeWidth={2} class="c-mint" />Secure payments · spam-protected</div>
+    <div class="float float--b"><Icon name="spark" size={18} strokeWidth={2} class="c-peri" />AI replying on WhatsApp</div>
   </div>
 </div>
 
@@ -194,10 +194,16 @@ import Icon from './Icon.astro';
     .float--a {
       left: 8px;
     }
+    .stage {
+      padding-top: 52px;
+    }
+    .float {
+      font-size: 12px;
+      padding: 10px 14px;
+    }
     .float--b {
       right: 8px;
-      white-space: normal;
-      max-width: 75%;
+      top: -36px;
     }
   }
 </style>

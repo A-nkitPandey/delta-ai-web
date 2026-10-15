@@ -17,12 +17,12 @@
     "secondaryCta": "See our work"
   },
   "stack": [
-    ".NET 10 LTS",
-    "Astro",
-    "Next.js",
-    "PostgreSQL",
-    "Cloudflare",
-    "UPI · Razorpay · Paytm"
+    "UPI",
+    "Razorpay",
+    "Paytm",
+    "WhatsApp",
+    "Google Sheets",
+    "Excel"
   ],
   "clients": [
     "Khan Popular Salon"

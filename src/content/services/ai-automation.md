@@ -2,7 +2,7 @@
 title: AI Solutions & Automation
 summary: Chat and WhatsApp assistants, document AI, smart search and workflow agents that cut manual work.
 icon: ai
-tags: [LLM agents, RAG, Voice]
+tags: [WhatsApp bots, Document reading, Voice]
 order: 1
 featured: true
 deliverables:

@@ -2,7 +2,7 @@
 title: Booking & Queue SaaS
 summary: Token queues, appointments and e-commerce for salons, clinics and retail — ready-made, branded for you.
 icon: calendar
-tags: [Real-time, White-label]
+tags: [Live updates, Your brand]
 order: 6
 deliverables:
   - Same-day token queues with live wait estimates

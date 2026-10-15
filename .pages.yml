@@ -35,7 +35,7 @@ content:
           - { name: intro, label: Intro, type: text }
           - { name: primaryCta, label: Primary button, type: string }
           - { name: secondaryCta, label: Secondary button, type: string }
-      - { name: stack, label: Tech stack strip, type: string, list: true }
+      - { name: stack, label: Works-with strip, type: string, list: true }
       - { name: clients, label: Client names, type: string, list: true }
       - name: contact
         label: Contact

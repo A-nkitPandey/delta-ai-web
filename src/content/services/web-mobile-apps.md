@@ -2,7 +2,7 @@
 title: Web & Mobile Apps
 summary: Fast, installable web apps and admin panels — lightweight on any phone, solid on any network.
 icon: apps
-tags: [PWA, React, Blazor]
+tags: [Installable app, Admin panel, Fast]
 order: 2
 deliverables:
   - Customer-facing web apps that install like a mobile app (PWA)

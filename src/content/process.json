@@ -2,6 +2,6 @@
   { "id": "discover", "title": "Discover", "text": "Goals, users and a fixed-scope plan.", "order": 1 },
   { "id": "design", "title": "Design", "text": "Clickable prototype you approve first.", "order": 2 },
   { "id": "build", "title": "Build", "text": "Weekly demos on a live staging link.", "order": 3 },
-  { "id": "secure", "title": "Secure", "text": "OWASP checks, scans and load tests.", "order": 4 },
+  { "id": "secure", "title": "Secure", "text": "Security checks, testing and load tests.", "order": 4 },
   { "id": "launch", "title": "Launch & care", "text": "Go live, monitor, improve every month.", "order": 5 }
 ]
