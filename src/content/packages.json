@@ -3,7 +3,7 @@
     "id": "website",
     "name": "Business Website",
     "blurb": "A fast, mobile-first website that brings you enquiries.",
-    "price": "₹14,999",
+    "price": "₹7,999",
     "period": "one-time",
     "features": [
       "Up to 8 pages, built for phones first",
@@ -19,9 +19,9 @@
     "id": "ai-whatsapp",
     "name": "AI WhatsApp Assistant",
     "blurb": "Replies to every customer in seconds, day and night.",
-    "price": "₹9,999",
+    "price": "₹4,999",
     "period": "setup",
-    "monthly": "+ ₹2,499 / month",
+    "monthly": "+ ₹1,499 / month",
     "features": [
       "Answers 24×7 in English, Hindi and Hinglish",
       "Trained on your services, prices and timings",
@@ -38,9 +38,9 @@
     "id": "booking",
     "name": "Booking & Token System",
     "blurb": "Online bookings and a live queue for clinics and salons.",
-    "price": "₹24,999",
+    "price": "₹9,999",
     "period": "setup",
-    "monthly": "+ ₹1,499 / month",
+    "monthly": "+ ₹799 / month",
     "features": [
       "Online booking and live token queue",
       "WhatsApp confirmations and reminders",
