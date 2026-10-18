@@ -1,11 +1,21 @@
 ---
 import Icon from './Icon.astro';
 import { site } from '@/lib/site';
+import { waLink, waNumber } from '@/lib/whatsapp';
 
 const suggestions = ['What can you build for my business?', 'How much does a project cost?', 'Do you make WhatsApp bots?', 'Are you hiring interns?'];
 ---
 
-<div class="chat" data-email={site.contact.email}>
+<div class="chat" data-email={site.contact.email} data-wa={waNumber}>
+  {
+    waNumber && (
+      <a class="wa" id="wa-float" href={waLink('Hi Delta AI! I have a question.')} target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.2.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z" />
+        </svg>
+      </a>
+    )
+  }
   <button type="button" class="launcher" id="chat-open" aria-haspopup="dialog" aria-controls="chat-panel" aria-expanded="false">
     <span class="pulse" aria-hidden="true"></span>
     <Icon name="chat" size={20} strokeWidth={2} />
@@ -45,7 +55,16 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     </div>
 
     <div class="share" id="chat-share" hidden>
-      <button type="button" class="btn btn--primary btn--sm btn--block" id="chat-handoff">Share with our team <Icon name="arrow" size={16} strokeWidth={2} /></button>
+      {
+        waNumber && (
+          <button type="button" class="btn btn--primary btn--sm btn--block" id="chat-wa">
+            <Icon name="whatsapp" size={16} strokeWidth={2} /> Continue on WhatsApp
+          </button>
+        )
+      }
+      <button type="button" class:list={['btn', 'btn--sm', 'btn--block', waNumber ? 'btn--ghost' : 'btn--primary']} id="chat-handoff">
+        Share with our team <Icon name="arrow" size={16} strokeWidth={2} />
+      </button>
     </div>
 
     <form class="bar" id="chat-form" autocomplete="off">
@@ -126,7 +145,7 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
 
     /** Render text safely: plain text with links for our own pages, emails and URLs. */
     const linkify = (el: HTMLElement, text: string) => {
-      const re = /(https?:\/\/[^\s)]+|[\w.+-]+@[\w-]+\.[\w.]+|\/(?:careers|partners|work|industries(?:\/[\w-]+)?|services(?:\/[\w-]+)?|about|#contact))/g;
+      const re = /(https?:\/\/[^\s)]+|[\w.+-]+@[\w-]+\.[\w.]+|\/(?:careers|partners|work|industries(?:\/[\w-]+)?|services(?:\/[\w-]+)?|about|#contact|#pricing))/g;
       let last = 0;
       for (const m of text.matchAll(re)) {
         const i = m.index ?? 0;
@@ -208,6 +227,21 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     });
     chips?.querySelectorAll<HTMLButtonElement>('.chipbtn').forEach((b) => b.addEventListener('click', () => ask(b.textContent ?? '')));
 
+    // WhatsApp: the floating button says which page the visitor was on, and the chat
+    // can continue on WhatsApp carrying the questions already asked.
+    const wa = root.dataset.wa ?? '';
+    const waUrl = (text: string) => `https://wa.me/${wa}?text=${encodeURIComponent(text)}`;
+    const waFloat = document.getElementById('wa-float') as HTMLAnchorElement | null;
+    if (waFloat && wa) {
+      const page = location.pathname === '/' ? 'your website' : `this page: ${location.origin}${location.pathname}`;
+      waFloat.href = waUrl(`Hi Delta AI! I was looking at ${page} and have a question.`);
+    }
+    document.getElementById('chat-wa')?.addEventListener('click', () => {
+      const asked = history.filter((m) => m.role === 'user').map((m) => `- ${m.content}`);
+      const text = `Hi Delta AI! I was chatting with your website assistant. My questions:\n${asked.join('\n')}`.slice(0, 1500);
+      window.open(waUrl(text), '_blank', 'noopener');
+    });
+
     // Hand the visitor's questions to the contact form so they don't retype them.
     handoff.addEventListener('click', () => {
       const asked = history.filter((m) => m.role === 'user').map((m) => `- ${m.content}`);
@@ -236,6 +270,27 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     right: max(16px, env(safe-area-inset-right));
     bottom: max(16px, env(safe-area-inset-bottom));
     z-index: 60;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+  }
+  .wa {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #25d366;
+    color: #fff;
+    box-shadow: 0 14px 40px rgba(var(--shadow-rgb), 0.45);
+    transition: transform 0.2s;
+  }
+  .wa:hover {
+    transform: translateY(-2px);
+  }
+  .is-open .wa {
+    display: none;
   }
   .launcher {
     position: relative;
@@ -534,6 +589,12 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
   }
   .share {
     padding: 0 16px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .share .btn {
+    gap: 8px;
   }
   .share[hidden] {
     display: none;
@@ -591,6 +652,10 @@ const suggestions = ['What can you build for my business?', 'How much does a pro
     .launcher {
       min-height: 48px;
       padding: 0 16px 0 14px;
+    }
+    .wa {
+      width: 48px;
+      height: 48px;
     }
   }
 </style>

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import SectionHeading from './SectionHeading.astro';
 import Icon from './Icon.astro';
+import { waLink } from '@/lib/whatsapp';
 const plans = (await getCollection('plans')).sort((a, b) => a.data.order - b.data.order);
 ---
 
@@ -26,9 +27,27 @@ const plans = (await getCollection('plans')).sort((a, b) => a.data.order - b.dat
               </li>
             ))}
           </ul>
-          <a href={`/?plan=${p.id}#contact`} class:list={['btn', 'btn--block', p.data.highlighted ? 'btn--primary' : 'btn--ghost']}>
-            {p.data.cta}
-          </a>
+          <div class="actions">
+            {waLink() ? (
+              <a
+                href={waLink(`Hi Delta AI! I'd like to know more about the ${p.data.name} support plan.`)}
+                target="_blank"
+                rel="noopener"
+                class:list={['btn', 'btn--block', p.data.highlighted ? 'btn--primary' : 'btn--ghost']}
+              >
+                <Icon name="whatsapp" size={18} strokeWidth={2} /> {p.data.cta}
+              </a>
+            ) : (
+              <a href={`/?plan=${p.id}#contact`} class:list={['btn', 'btn--block', p.data.highlighted ? 'btn--primary' : 'btn--ghost']}>
+                {p.data.cta}
+              </a>
+            )}
+            {waLink() && (
+              <a href={`/?plan=${p.id}#contact`} class="alt">
+                or send your details
+              </a>
+            )}
+          </div>
         </article>
       ))
     }
@@ -98,7 +117,23 @@ const plans = (await getCollection('plans')).sort((a, b) => a.data.order - b.dat
     margin-top: 4px;
     color: var(--mint);
   }
-  .plan .btn {
+  .actions {
     margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .actions .btn {
+    gap: 8px;
+  }
+  .alt {
+    font-size: 13px;
+    color: var(--text-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .alt:hover {
+    color: var(--mint);
   }
 </style>

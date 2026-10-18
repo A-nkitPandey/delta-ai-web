@@ -1,0 +1,54 @@
+[
+  {
+    "id": "website",
+    "name": "Business Website",
+    "blurb": "A fast, mobile-first website that brings you enquiries.",
+    "price": "₹14,999",
+    "period": "one-time",
+    "features": [
+      "Up to 8 pages, built for phones first",
+      "WhatsApp button and enquiry form on every page",
+      "Google Maps, basic SEO and Google Business profile help",
+      "Domain and hosting in your business name",
+      "One month of free changes after launch"
+    ],
+    "service": "web-mobile-apps",
+    "order": 1
+  },
+  {
+    "id": "ai-whatsapp",
+    "name": "AI WhatsApp Assistant",
+    "blurb": "Replies to every customer in seconds, day and night.",
+    "price": "₹9,999",
+    "period": "setup",
+    "monthly": "+ ₹2,499 / month",
+    "features": [
+      "Answers 24×7 in English, Hindi and Hinglish",
+      "Trained on your services, prices and timings",
+      "Saves every lead to Google Sheets",
+      "Hands the chat to your staff whenever needed",
+      "Meta’s WhatsApp charges billed at actuals"
+    ],
+    "service": "ai-automation",
+    "highlighted": true,
+    "badge": "Most popular",
+    "order": 2
+  },
+  {
+    "id": "booking",
+    "name": "Booking & Token System",
+    "blurb": "Online bookings and a live queue for clinics and salons.",
+    "price": "₹24,999",
+    "period": "setup",
+    "monthly": "+ ₹1,499 / month",
+    "features": [
+      "Online booking and live token queue",
+      "WhatsApp confirmations and reminders",
+      "Staff, slots and holidays in one calendar",
+      "Customer list with visit history",
+      "UPI payments when you want them"
+    ],
+    "service": "booking-queue-saas",
+    "order": 3
+  }
+]

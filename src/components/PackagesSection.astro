@@ -1,0 +1,173 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+import { waLink } from '@/lib/whatsapp';
+
+const packages = (await getCollection('packages')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section id="pricing" class="section wrap" aria-labelledby="pricing-title">
+  <SectionHeading id="pricing-title" eyebrow="Packages & pricing" before="Clear prices." accent="No surprises." center />
+  <p class="lead">Starting prices for small businesses. We fix the final price in writing after a free call — bigger or custom projects are quoted separately.</p>
+  <div class="grid">
+    {
+      packages.map((p) => {
+        const wa = waLink(`Hi Delta AI! I'm interested in the ${p.data.name} package (from ${p.data.price}). Can we talk?`);
+        const form = `/?service=${p.data.service}#contact`;
+        return (
+          <article class:list={['glass', 'plan', { hot: p.data.highlighted }]}>
+            {p.data.badge && <span class="chip chip--mint badge">{p.data.badge}</span>}
+            <h3>{p.data.name}</h3>
+            <p class="muted blurb">{p.data.blurb}</p>
+            <p class="from">Starting from</p>
+            <p class="price">
+              {p.data.price}
+              <span class="period"> {p.data.period}</span>
+            </p>
+            {p.data.monthly && <p class="monthly">{p.data.monthly}</p>}
+            <ul class="features">
+              {p.data.features.map((f) => (
+                <li>
+                  <Icon name="check" size={16} strokeWidth={2} class="tick" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <div class="actions">
+              {wa ? (
+                <a href={wa} target="_blank" rel="noopener" class:list={['btn', 'btn--block', p.data.highlighted ? 'btn--primary' : 'btn--ghost']}>
+                  <Icon name="whatsapp" size={18} strokeWidth={2} /> Chat on WhatsApp
+                </a>
+              ) : (
+                <a href={form} class:list={['btn', 'btn--block', p.data.highlighted ? 'btn--primary' : 'btn--ghost']}>
+                  Get a quote
+                </a>
+              )}
+              {wa && (
+                <a href={form} class="alt">
+                  or send your details
+                </a>
+              )}
+            </div>
+          </article>
+        );
+      })
+    }
+  </div>
+  <p class="fine">Prices exclude GST. Third-party charges (WhatsApp/Meta, domain, SMS, payment gateway) are billed at actuals, in your business name.</p>
+</section>
+
+<style>
+  .lead {
+    margin: 18px auto 0;
+    max-width: 600px;
+    text-align: center;
+    font-size: 16px;
+  }
+  .grid {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: 18px;
+    align-items: stretch;
+  }
+  .plan {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+  }
+  .hot {
+    background: linear-gradient(180deg, rgba(var(--mint-rgb), 0.12), rgba(var(--fg-rgb), 0.03));
+    border-color: rgba(var(--mint-rgb), 0.35);
+    box-shadow: 0 30px 80px rgba(var(--mint-rgb), 0.08), inset 0 1px 0 rgba(var(--fg-rgb), 0.1);
+  }
+  .badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  h3 {
+    font-size: 18px;
+    letter-spacing: -0.01em;
+    padding-right: 110px;
+  }
+  .plan:not(.hot) h3 {
+    padding-right: 0;
+  }
+  .blurb {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+  .from {
+    margin-top: 22px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .price {
+    margin-top: 4px;
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .period {
+    font-size: 15px;
+    color: var(--faint);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .monthly {
+    margin-top: 2px;
+    font-size: 15px;
+    color: var(--text-2);
+  }
+  .features {
+    list-style: none;
+    margin: 24px 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .features li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .features :global(.tick) {
+    flex: none;
+    margin-top: 4px;
+    color: var(--mint);
+  }
+  .actions {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .actions .btn {
+    gap: 8px;
+  }
+  .alt {
+    font-size: 13px;
+    color: var(--text-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .alt:hover {
+    color: var(--mint);
+  }
+  .fine {
+    margin: 22px auto 0;
+    max-width: 640px;
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--faint);
+  }
+</style>

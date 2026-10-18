@@ -86,6 +86,27 @@ const plans = defineCollection({
   }),
 });
 
+/** Fixed-scope starter packages with "starting from" prices, shown on the home page. */
+const packages = defineCollection({
+  loader: file('./src/content/packages.json'),
+  schema: z.object({
+    name: z.string(),
+    blurb: z.string(),
+    /** Starting price, e.g. "₹9,999". GST extra; the final price is fixed after a call. */
+    price: z.string(),
+    /** What the price covers, e.g. "setup" or "one-time". */
+    period: z.string(),
+    /** Optional recurring fee shown under the price, e.g. "+ ₹2,499 / month". */
+    monthly: z.string().optional(),
+    features: z.array(z.string()).min(1),
+    /** Service id pre-selected in the contact form. */
+    service: z.string(),
+    highlighted: z.boolean().default(false),
+    badge: z.string().optional(),
+    order: z.number().default(100),
+  }),
+});
+
 /** Steps in "How we work". */
 const process = defineCollection({
   loader: file('./src/content/process.json'),
@@ -155,4 +176,4 @@ const industries = defineCollection({
   }),
 });
 
-export const collections = { services, work, plans, process, security, faq, jobs, industries };
+export const collections = { services, work, plans, packages, process, security, faq, jobs, industries };

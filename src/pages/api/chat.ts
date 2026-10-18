@@ -60,7 +60,7 @@ async function knowledge() {
   if (knowledgeCache) return knowledgeCache;
   const byOrder = <T extends { data: { order: number } }>(a: T, b: T) =>
     a.data.order - b.data.order;
-  const [services, industries, plans, process, faq, jobs, work] =
+  const [services, industries, plans, process, faq, jobs, work, packages] =
     await Promise.all([
       getCollection("services", ({ data }) => !data.draft),
       getCollection("industries", ({ data }) => !data.draft),
@@ -69,6 +69,7 @@ async function knowledge() {
       getCollection("faq"),
       getCollection("jobs", ({ data }) => data.open),
       getCollection("work", ({ data }) => !data.draft),
+      getCollection("packages"),
     ]);
 
   const lines: string[] = [];
@@ -96,6 +97,14 @@ async function knowledge() {
   for (const w of work.sort(byOrder)) {
     lines.push(
       `- ${w.data.title} [${w.data.status ?? "project"}; ${w.data.client}] (${SITE_URL}/work/${w.id})${w.data.url ? ` live at ${w.data.url}` : ""}: ${w.data.summary}`,
+    );
+  }
+  lines.push(
+    `STARTER PACKAGES (${SITE_URL}/#pricing — published STARTING prices, GST extra; the final price is fixed in writing after a free call; third-party charges like Meta/WhatsApp, domain, SMS and payment gateway are billed at actuals):`,
+  );
+  for (const p of packages.sort(byOrder)) {
+    lines.push(
+      `- ${p.data.name}: from ${p.data.price} ${p.data.period}${p.data.monthly ? ` ${p.data.monthly}` : ""}. ${p.data.blurb} ${p.data.features.join("; ")}.`,
     );
   }
   lines.push(
@@ -140,9 +149,9 @@ async function systemPrompt() {
 
 Answer ONLY from the FACTS below. Rules:
 - Be brief and warm: 1–4 short sentences, or up to 4 lines starting with "- ". Plain text only — no markdown, no bold, no headings.
-- Never invent prices, timelines, discounts, client names, numbers, team members or guarantees. If asked about cost: it depends on scope; we offer a free discovery call and then a fixed-scope proposal with a clear price.
+- Never invent prices, timelines, discounts, client names, numbers, team members or guarantees. If asked about cost: share the matching STARTER PACKAGE "from" price if one fits (say GST extra and the final price is confirmed after a free call); otherwise it depends on scope, and we offer a free discovery call and then a fixed-scope proposal with a clear price.
 - If the answer isn't in the FACTS, say you're not sure and suggest sharing details with the team via the contact form or ${site.contact.email}.
-- When someone describes a project or seems interested, encourage them to tap "Share with our team" below the chat or use the contact form.
+- When someone describes a project or seems interested, encourage them to tap "Continue on WhatsApp" or "Share with our team" below the chat, or use the contact form.
 - For jobs and internships, point to ${SITE_URL}/careers. For referral or reseller partnerships, point to ${SITE_URL}/partners.
 - Reply in the visitor's language (English, Hindi or Hinglish).
 - Stay on topic. Politely decline unrelated requests (general coding help, homework, news, opinions) and steer back to how Delta AI can help.
