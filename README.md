@@ -11,6 +11,7 @@
 <br />
 
 [![Live site](https://img.shields.io/badge/live-deltaaiinnovation.in-5ff2c0?style=for-the-badge&labelColor=0b1117)](https://deltaaiinnovation.in)
+[![Version](https://img.shields.io/badge/version-1.0.0-9fb0ff?style=for-the-badge&labelColor=0b1117)](CHANGELOG.md)
 [![CI](https://img.shields.io/github/actions/workflow/status/A-nkitPandey/delta-ai-web/ci.yml?branch=main&style=for-the-badge&label=CI&labelColor=0b1117)](https://github.com/A-nkitPandey/delta-ai-web/actions/workflows/ci.yml)
 
 ![Astro](https://img.shields.io/badge/Astro_7-0b1117?style=flat-square&logo=astro&logoColor=white)
@@ -20,7 +21,7 @@
 ![D1](https://img.shields.io/badge/D1_SQLite-0b1117?style=flat-square&logo=sqlite&logoColor=5ff2c0)
 ![WhatsApp](https://img.shields.io/badge/WhatsApp_Cloud_API-0b1117?style=flat-square&logo=whatsapp&logoColor=25d366)
 
-[**Visit the site**](https://deltaaiinnovation.in) &nbsp;·&nbsp; [Pricing](https://deltaaiinnovation.in/#pricing) &nbsp;·&nbsp; [Our work](https://deltaaiinnovation.in/work) &nbsp;·&nbsp; [Run & deploy guide](docs/DEPLOY.md)
+[**Visit the site**](https://deltaaiinnovation.in) &nbsp;·&nbsp; [Pricing](https://deltaaiinnovation.in/#pricing) &nbsp;·&nbsp; [Our work](https://deltaaiinnovation.in/work) &nbsp;·&nbsp; [Run & deploy guide](docs/DEPLOY.md) &nbsp;·&nbsp; [Changelog](CHANGELOG.md)
 
 </div>
 
