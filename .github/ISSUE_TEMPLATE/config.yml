@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Start a project with Delta AI
+    url: https://deltaaiinnovation.in/#contact
+    about: Business enquiries and quotes — please use the website, not GitHub issues.
+  - name: Report a security issue
+    url: https://github.com/A-nkitPandey/delta-ai-web/security/advisories/new
+    about: Please report vulnerabilities privately.
