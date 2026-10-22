@@ -9,7 +9,7 @@
     "href": "/#contact"
   },
   "hiring": {
-    "show": true,
+    "show": false,
     "label": "HIRING",
     "text": "We're hiring 20 interns — remote, apply in 2 minutes"
   },
@@ -18,8 +18,8 @@
     "accent": "thinks",
     "rotate": ["thinks", "talks", "sells", "scales"],
     "after": ", ships and stays secure.",
-    "intro": "Delta AI designs, builds and supports AI-powered web apps, business systems and payment-ready platforms — from first sketch to round-the-clock care.",
-    "primaryCta": "Book a discovery call",
+    "intro": "Delta AI designs, builds and supports AI-powered web apps, business systems and payment-ready platforms — from the first idea to support after launch.",
+    "primaryCta": "Get a free consultation",
     "secondaryCta": "See our work"
   },
   "stack": [
@@ -35,7 +35,7 @@
   ],
   "contact": {
     "email": "info@deltaaiinnovation.in",
-    "phone": "",
+    "phone": "+91 80766 29017",
     "whatsapp": "918076629017",
     "city": "New Delhi, India",
     "replyPromise": "You’ll get a reply within one business day with next steps and a rough estimate."
@@ -48,6 +48,12 @@
   },
   "foundingYear": 2026,
   "udyam": "UDYAM-DL-09-0054883",
+  "founder": {
+    "name": "Ankit Pandey",
+    "role": "Founder",
+    "initials": "AP",
+    "bio": "A software engineer who has built and modernised business software — HR systems, payment gateways and live customer-facing apps on .NET, React and SQL Server. He started Delta AI Innovation in 2026 to bring practical, secure AI to Indian small businesses, and still talks to every new client personally."
+  },
   "team": {
     "headline": "One team across AI, web, payments and cloud",
     "intro": "Delta AI Innovation is a team of engineers and designers who have built and modernised business software on .NET, React and SQL Server — HR systems, payment gateways and live customer-facing apps. We started Delta AI to bring practical, secure AI to Indian small businesses.",

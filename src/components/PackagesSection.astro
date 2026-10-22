@@ -26,6 +26,11 @@ const packages = (await getCollection('packages')).sort((a, b) => a.data.order -
               <span class="period"> {p.data.period}</span>
             </p>
             {p.data.monthly && <p class="monthly">{p.data.monthly}</p>}
+            {p.data.delivery && (
+              <p class="eta">
+                <Icon name="spark" size={14} strokeWidth={2} /> {p.data.delivery}
+              </p>
+            )}
             <ul class="features">
               {p.data.features.map((f) => (
                 <li>
@@ -124,6 +129,19 @@ const packages = (await getCollection('packages')).sort((a, b) => a.data.order -
     margin-top: 2px;
     font-size: 15px;
     color: var(--text-2);
+  }
+  .eta {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    color: var(--mint);
+    background: rgba(var(--mint-rgb), 0.1);
+    border: 1px solid rgba(var(--mint-rgb), 0.25);
   }
   .features {
     list-style: none;

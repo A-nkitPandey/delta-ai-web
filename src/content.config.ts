@@ -98,6 +98,8 @@ const packages = defineCollection({
     period: z.string(),
     /** Optional recurring fee shown under the price, e.g. "+ ₹2,499 / month". */
     monthly: z.string().optional(),
+    /** Typical time to go live, e.g. "Live in about 7 days". */
+    delivery: z.string().optional(),
     features: z.array(z.string()).min(1),
     /** Service id pre-selected in the contact form. */
     service: z.string(),

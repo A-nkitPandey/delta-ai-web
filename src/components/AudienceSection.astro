@@ -1,0 +1,131 @@
+---
+/**
+ * Two clear paths right under the hero: ready-made packages for small
+ * businesses, and custom work for growing companies.
+ */
+import Icon from './Icon.astro';
+
+const paths = [
+  {
+    icon: 'store',
+    eyebrow: 'For small businesses',
+    title: 'Salons, clinics, shops and coaching centres',
+    text: 'Ready-made packages with clear prices. Live in days, run on WhatsApp, and simple enough for any staff member.',
+    points: ['AI WhatsApp assistant from ₹4,999', 'Booking & token system from ₹9,999', 'Business website from ₹7,999'],
+    cta: { label: 'See packages & prices', href: '/#pricing' },
+    primary: true,
+  },
+  {
+    icon: 'systems',
+    eyebrow: 'For growing companies',
+    title: 'Custom software, AI and integrations',
+    text: 'A fixed-scope plan for the systems your teams run on — designed with you, delivered in phases, owned by you.',
+    points: ['AI agents and document automation', 'HR, CRM and inventory systems', 'Payment integrations and old-system upgrades'],
+    cta: { label: 'Explore services', href: '/services' },
+    primary: false,
+  },
+];
+---
+
+<section class="paths wrap" aria-labelledby="paths-title">
+  <h2 id="paths-title" class="sr-only">Who we work with</h2>
+  <ul class="grid">
+    {
+      paths.map((p) => (
+        <li class:list={['glass', 'card', { hot: p.primary }]}>
+          <span class="ic">
+            <Icon name={p.icon} size={20} strokeWidth={1.8} />
+          </span>
+          <p class="eyebrow">{p.eyebrow}</p>
+          <h3>{p.title}</h3>
+          <p class="muted">{p.text}</p>
+          <ul class="points">
+            {p.points.map((x) => (
+              <li>
+                <Icon name="check" size={15} strokeWidth={2} class="tick" />
+                {x}
+              </li>
+            ))}
+          </ul>
+          <a href={p.cta.href} class:list={['btn', 'btn--sm', p.primary ? 'btn--primary' : 'btn--ghost']}>
+            {p.cta.label} <Icon name="arrow" size={16} strokeWidth={2} />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .paths {
+    padding-block: clamp(28px, 5vw, 56px) 0;
+  }
+  .grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: 16px;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: clamp(22px, 3.5vw, 32px);
+  }
+  .hot {
+    background: linear-gradient(160deg, rgba(var(--mint-rgb), 0.1), rgba(var(--fg-rgb), 0.03));
+    border-color: rgba(var(--mint-rgb), 0.3);
+  }
+  .ic {
+    display: inline-flex;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    color: var(--mint);
+    background: rgba(var(--mint-rgb), 0.1);
+    border: 1px solid rgba(var(--mint-rgb), 0.22);
+    margin-bottom: 4px;
+  }
+  h3 {
+    font-size: clamp(18px, 2vw, 21px);
+    letter-spacing: -0.015em;
+  }
+  .muted {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .points {
+    list-style: none;
+    margin: 6px 0 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .points li {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .points :global(.tick) {
+    flex: none;
+    margin-top: 3px;
+    color: var(--mint);
+  }
+  .card .btn {
+    margin-top: auto;
+    align-self: flex-start;
+    gap: 8px;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>

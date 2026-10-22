@@ -43,6 +43,10 @@ const SiteSchema = z.object({
   }),
   foundingYear: z.number().int(),
   udyam: z.string().optional().default(''),
+  /** Shown on /about. Leave out to hide the founder card. */
+  founder: z
+    .object({ name: z.string(), role: z.string(), bio: z.string(), initials: z.string().max(3) })
+    .optional(),
   team: z.object({
     headline: z.string(),
     intro: z.string(),

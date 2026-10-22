@@ -68,7 +68,10 @@ const socials = [
   </div>
   <div class="wrap base">
     <span>© {year} {site.legalName} · {site.contact.city}{site.udyam && <> · MSME registered ({site.udyam})</>}</span>
-    <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+    <span class="reach">
+      {site.contact.phone && <a href={`tel:${site.contact.phone.replace(/\s/g, '')}`}>{site.contact.phone}</a>}
+      <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+    </span>
   </div>
 </footer>
 
@@ -143,5 +146,10 @@ const socials = [
     padding-block: 20px 40px;
     border-top: 1px solid rgba(var(--fg-rgb), 0.05);
     color: var(--faint);
+  }
+  .reach {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
   }
 </style>

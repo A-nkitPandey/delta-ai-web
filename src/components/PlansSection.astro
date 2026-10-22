@@ -15,7 +15,8 @@ const plans = (await getCollection('plans')).sort((a, b) => a.data.order - b.dat
           {p.data.badge && <span class="chip chip--mint badge">{p.data.badge}</span>}
           <h3>{p.data.name}</h3>
           <p class="muted blurb">{p.data.blurb}</p>
-          <p class="price">
+          {p.data.period && <p class="from">Starting from</p>}
+          <p class:list={['price', { tight: p.data.period }]}>
             {p.data.price}
             {p.data.period && <span class="period"> {p.data.period}</span>}
           </p>
@@ -91,6 +92,17 @@ const plans = (await getCollection('plans')).sort((a, b) => a.data.order - b.dat
     font-size: 32px;
     font-weight: 600;
     letter-spacing: -0.03em;
+  }
+  .from {
+    margin-top: 22px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .price.tight {
+    margin-top: 4px;
   }
   .period {
     font-size: 15px;

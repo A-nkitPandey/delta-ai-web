@@ -1,6 +1,6 @@
 ---
 title: Business Systems
-summary: HR and employee management, inventory, CRM and dashboards with role-based access and audit trails.
+summary: HR, inventory, CRM and dashboards built around how your team works — with the right access for every person.
 icon: systems
 tags: [Staff access, Reports]
 order: 5

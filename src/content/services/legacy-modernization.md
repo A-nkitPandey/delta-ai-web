@@ -1,8 +1,8 @@
 ---
 title: Legacy Modernization
-summary: Move ASP.NET Web Forms and MVC systems to .NET 10 with clean architecture — without stopping the business.
+summary: Give your old business software a modern, secure upgrade — step by step, while your team keeps working.
 icon: modernize
-tags: [Zero downtime, Fully tested]
+tags: [Step by step, Fully tested]
 order: 4
 deliverables:
   - Audit of your current system and a step-by-step migration plan

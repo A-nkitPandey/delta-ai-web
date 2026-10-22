@@ -70,11 +70,11 @@ async function knowledge() {
   );
   for (const p of packages.sort(byOrder)) {
     lines.push(
-      `- ${p.data.name}: from ${p.data.price} ${p.data.period}${p.data.monthly ? ` ${p.data.monthly}` : ""}. ${p.data.blurb} ${p.data.features.join("; ")}.`,
+      `- ${p.data.name}: from ${p.data.price} ${p.data.period}${p.data.monthly ? ` ${p.data.monthly}` : ""}${p.data.delivery ? ` (typically: ${p.data.delivery})` : ""}. ${p.data.blurb} ${p.data.features.join("; ")}.`,
     );
   }
   lines.push(
-    "SUPPORT PLANS (prices are not published; they are quoted after a free discovery call):",
+    "SUPPORT & CARE PLANS (after launch; starting prices, GST extra):",
   );
   for (const p of plans.sort(byOrder)) {
     lines.push(

@@ -3,7 +3,8 @@
     "id": "essential",
     "name": "Essential",
     "blurb": "For live sites that need a safety net.",
-    "price": "On request",
+    "price": "₹1,499",
+    "period": "/ month",
     "features": ["Uptime and security monitoring", "Monthly updates and patches", "Email support, next business day"],
     "cta": "Choose Essential",
     "order": 1
@@ -12,7 +13,8 @@
     "id": "growth",
     "name": "Growth",
     "blurb": "For products that change every month.",
-    "price": "On request",
+    "price": "₹4,999",
+    "period": "/ month",
     "features": ["Everything in Essential", "Monthly hours for new features", "WhatsApp support, same day", "Quarterly security review"],
     "cta": "Choose Growth",
     "highlighted": true,
@@ -24,7 +26,7 @@
     "name": "Dedicated",
     "blurb": "Your own team, on call.",
     "price": "Custom",
-    "features": ["Dedicated developers", "24/7 incident response", "Written SLA and uptime target"],
+    "features": ["Dedicated developers", "Priority incident response", "Written support terms"],
     "cta": "Talk to us",
     "order": 3
   }

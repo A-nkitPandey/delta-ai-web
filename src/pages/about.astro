@@ -75,6 +75,39 @@ const jsonLd = [
       </div>
     </section>
 
+    {
+      site.founder && (
+        <section class="founder glass" aria-labelledby="founder-title">
+          <span class="avatar" aria-hidden="true">{site.founder.initials}</span>
+          <div>
+            <p class="eyebrow">Who you’ll work with</p>
+            <h2 id="founder-title">
+              {site.founder.name} <span class="role">· {site.founder.role}</span>
+            </h2>
+            <p class="muted bio">{site.founder.bio}</p>
+          </div>
+        </section>
+      )
+    }
+
+    <section class="biz" aria-labelledby="biz-title">
+      <h2 id="biz-title" class="eyebrow">Business details</h2>
+      <dl class="glass details">
+        <div><dt>Legal name</dt><dd>{site.legalName}</dd></div>
+        {site.udyam && <div><dt>MSME (Udyam) registration</dt><dd>{site.udyam}</dd></div>}
+        <div><dt>Location</dt><dd>{site.contact.city}</dd></div>
+        <div><dt>Email</dt><dd><a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></dd></div>
+        {
+          site.contact.phone && (
+            <div>
+              <dt>Phone & WhatsApp</dt>
+              <dd><a href={`tel:${site.contact.phone.replace(/\s/g, '')}`}>{site.contact.phone}</a></dd>
+            </div>
+          )
+        }
+      </dl>
+    </section>
+
     <section class="values" aria-labelledby="values-title">
       <h2 id="values-title" class="eyebrow">What we believe</h2>
       <ul class="grid">
@@ -180,5 +213,69 @@ const jsonLd = [
     margin-top: 8px;
     font-size: 15px;
     line-height: 1.6;
+  }
+  .founder {
+    margin-top: 18px;
+    padding: clamp(22px, 4vw, 36px);
+    display: flex;
+    gap: 22px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .founder > div {
+    flex: 1 1 280px;
+    min-width: 0;
+  }
+  .avatar {
+    flex: none;
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 0.02em;
+    color: var(--mint);
+    background: rgba(var(--mint-rgb), 0.12);
+    border: 1px solid rgba(var(--mint-rgb), 0.35);
+  }
+  .founder h2 {
+    margin-top: 8px;
+    font-size: clamp(20px, 2.4vw, 26px);
+    letter-spacing: -0.02em;
+  }
+  .founder .role {
+    color: var(--faint);
+    font-weight: 400;
+  }
+  .founder .bio {
+    margin-top: 10px;
+    line-height: 1.65;
+    max-width: 640px;
+  }
+  .biz {
+    margin-top: 48px;
+  }
+  .details {
+    margin-top: 16px;
+    padding: 8px 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+    column-gap: 24px;
+  }
+  .details > div {
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(var(--fg-rgb), 0.06);
+    min-width: 0;
+  }
+  .details dt {
+    font-size: 12px;
+    color: var(--faint);
+  }
+  .details dd {
+    margin-top: 4px;
+    font-size: 15px;
+    overflow-wrap: anywhere;
   }
 </style>

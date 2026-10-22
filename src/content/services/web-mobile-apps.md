@@ -1,6 +1,6 @@
 ---
 title: Web & Mobile Apps
-summary: Fast, installable web apps and admin panels — lightweight on any phone, solid on any network.
+summary: Websites, apps and admin panels that load fast on any phone and keep working on weak networks.
 icon: apps
 tags: [Installable app, Admin panel, Fast]
 order: 2

@@ -4,6 +4,7 @@ import { site } from '@/lib/site';
 import Icon from './Icon.astro';
 import HeroVisual from './HeroVisual.astro';
 import NeuralField from './NeuralField.astro';
+import { waLink } from '@/lib/whatsapp';
 const { hero, stack } = site;
 
 // While any role on /careers is open, the hiring banner replaces the usual announcement.
@@ -43,6 +44,16 @@ const trust = [
       <a href="/#contact" class="btn btn--primary">{hero.primaryCta}<Icon name="arrow" size={18} strokeWidth={2} /></a>
       <a href="/#work" class="btn btn--ghost">{hero.secondaryCta}</a>
     </div>
+    {
+      waLink() && (
+        <p class="wa-line">
+          Prefer WhatsApp?{' '}
+          <a href={waLink('Hi Delta AI! I would like a free consultation.')} target="_blank" rel="noopener">
+            Message us on +91 80766 29017
+          </a>
+        </p>
+      )
+    }
     <ul class="stack" aria-label="Works with the tools you already use">
       <li class="faint">WORKS WITH</li>
       {stack.map((s) => <li>{s}</li>)}
@@ -78,6 +89,16 @@ const trust = [
 </section>
 
 <style>
+  .wa-line {
+    margin-top: 14px;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .wa-line a {
+    color: var(--mint);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
   .hero {
     position: relative;
     isolation: isolate;

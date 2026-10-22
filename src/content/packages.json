@@ -5,6 +5,7 @@
     "blurb": "A fast, mobile-first website that brings you enquiries.",
     "price": "₹7,999",
     "period": "one-time",
+    "delivery": "Live in 7–10 days",
     "features": [
       "Up to 8 pages, built for phones first",
       "WhatsApp button and enquiry form on every page",
@@ -22,6 +23,7 @@
     "price": "₹4,999",
     "period": "setup",
     "monthly": "+ ₹1,499 / month",
+    "delivery": "Live in about 7 days",
     "features": [
       "Answers 24×7 in English, Hindi and Hinglish",
       "Trained on your services, prices and timings",
@@ -41,6 +43,7 @@
     "price": "₹9,999",
     "period": "setup",
     "monthly": "+ ₹799 / month",
+    "delivery": "Live in 10–14 days",
     "features": [
       "Online booking and live token queue",
       "WhatsApp confirmations and reminders",

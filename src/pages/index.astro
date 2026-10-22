@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/Hero.astro';
 import StorySection from '@/components/StorySection.astro';
+import AudienceSection from '@/components/AudienceSection.astro';
 import ServicesSection from '@/components/ServicesSection.astro';
 import IndustriesSection from '@/components/IndustriesSection.astro';
 import AiDemo from '@/components/AiDemo.astro';
@@ -51,6 +52,7 @@ const jsonLd = [
 
 <BaseLayout jsonLd={jsonLd}>
   <Hero />
+  <AudienceSection />
   <StorySection />
   <ServicesSection />
   <AiDemo />

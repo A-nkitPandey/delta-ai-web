@@ -1,6 +1,6 @@
 ---
 title: Payment Integrations
-summary: UPI, Razorpay, Paytm and Easebuzz checkouts with signed callbacks, smart gateway routing and reconciliation.
+summary: Accept UPI and card payments through Razorpay, Paytm or Easebuzz — and match every payment to the right order automatically.
 icon: payments
 tags: [UPI, Auto-reconciliation]
 order: 3

@@ -1,6 +1,6 @@
 ---
 title: AI Solutions & Automation
-summary: Chat and WhatsApp assistants, document AI, smart search and workflow agents that cut manual work.
+summary: WhatsApp and website assistants, document reading and AI agents that take repetitive work off your team.
 icon: ai
 tags: [WhatsApp bots, Document reading, Voice]
 order: 1

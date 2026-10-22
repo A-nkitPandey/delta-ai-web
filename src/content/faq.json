@@ -8,7 +8,7 @@
   {
     "id": "timeline",
     "question": "How long does it take?",
-    "answer": "A marketing site or small app usually takes 2–6 weeks. Larger systems are delivered in phases, with something live early and improvements every few weeks.",
+    "answer": "Our starter packages typically go live in 7–14 days: a business website in 7–10 days, an AI WhatsApp assistant in about 7 days (Meta's number verification can sometimes add a few days) and a booking & token system in 10–14 days. Larger systems are delivered in phases, with something live early and improvements every few weeks.",
     "order": 2
   },
   {
@@ -20,7 +20,37 @@
   {
     "id": "support",
     "question": "Do you support the app after launch?",
-    "answer": "Yes. Our care plans cover monitoring, security patches, fixes and new features, with WhatsApp or email support depending on the plan.",
+    "answer": "Yes. Care plans start at ₹1,499/month and cover monitoring, security patches, fixes and new features, with WhatsApp or email support depending on the plan.",
     "order": 4
+  },
+  {
+    "id": "ai-mistakes",
+    "question": "What if the AI gives a wrong answer?",
+    "answer": "The assistant only answers from the information you give us — your services, prices and timings — and says it isn't sure instead of guessing. Your staff can take over any chat at any time, and we review and improve the answers with you in the first weeks.",
+    "order": 5
+  },
+  {
+    "id": "data",
+    "question": "Is my customers' data safe?",
+    "answer": "Yes. Your WhatsApp number, domain and cloud accounts are set up in your business name, data can be hosted in Indian data centres, and we follow India's DPDP rules — consent, limited storage and deletion on request. We never sell data or use it to train public AI models.",
+    "order": 6
+  },
+  {
+    "id": "payment",
+    "question": "How do payments work?",
+    "answer": "We agree the full price in writing before we start. You pay an advance to begin and the rest when your project goes live; the exact split is in your quote. Monthly plans are billed monthly and can be stopped any time.",
+    "order": 7
+  },
+  {
+    "id": "invoice",
+    "question": "Will I get a proper invoice?",
+    "answer": "Yes — you get an invoice for every payment from Delta AI Innovation, an MSME (Udyam) registered business.",
+    "order": 8
+  },
+  {
+    "id": "after-launch",
+    "question": "What happens after the free month of changes?",
+    "answer": "You can stay on a care plan for updates and support, or take full control yourself — everything is already in your name, and we hand over the code and logins.",
+    "order": 9
   }
 ]

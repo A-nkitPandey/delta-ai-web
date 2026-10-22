@@ -8,7 +8,7 @@ const services = (await getCollection('services', ({ data }) => !data.draft)).so
 // Adding a Turnstile site key later switches on Cloudflare's extra bot check.
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
 const turnstile = !!siteKey;
-const budgets = ['Not sure yet', 'Under ₹1 lakh', '₹1–5 lakh', '₹5–15 lakh', '₹15 lakh +'];
+const budgets = ['Not sure yet', 'Under ₹25,000', '₹25,000 – 1 lakh', '₹1–5 lakh', '₹5–15 lakh', '₹15 lakh +'];
 const whatsapp = site.contact.whatsapp;
 ---
 
@@ -50,7 +50,7 @@ const whatsapp = site.contact.whatsapp;
         <input id="f-name" name="name" type="text" autocomplete="name" required maxlength="100" />
       </div>
       <div class="field">
-        <label for="f-email">Work email</label>
+        <label for="f-email">Email</label>
         <input id="f-email" name="email" type="email" autocomplete="email" required maxlength="200" />
       </div>
       <div class="field">
