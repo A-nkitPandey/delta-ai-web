@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="t d">
+  <title id="t">Delta AI</title>
+  <desc id="d">AI-powered software, built to last — WhatsApp AI assistants, booking systems and business software for Indian businesses.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07090d"/>
+      <stop offset="1" stop-color="#0b1117"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0.18" cy="0.1" r="0.6">
+      <stop offset="0" stop-color="#5ff2c0" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#5ff2c0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0.92" cy="0.95" r="0.55">
+      <stop offset="0" stop-color="#8b9cff" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#8b9cff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="word" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7ef2c9"/>
+      <stop offset="1" stop-color="#9fb0ff"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5ff2c0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#8b9cff" stop-opacity="0.25"/>
+    </linearGradient>
+    <clipPath id="r"><rect width="1280" height="400" rx="28"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#r)">
+    <rect width="1280" height="400" fill="url(#bg)"/>
+    <rect width="1280" height="400" fill="url(#glowA)"/>
+    <rect width="1280" height="400" fill="url(#glowB)"/>
+
+    <!-- neural field -->
+    <g fill="none" stroke="#5ff2c0" stroke-opacity="0.18" stroke-width="1">
+      <path d="M840 70 L930 40 L1010 96 L1110 58 L1190 120 M930 40 L960 150 L1010 96 M960 150 L1060 190 L1110 58 M1060 190 L1170 250 L1190 120 M1060 190 L990 290 L1100 330 L1170 250 M990 290 L900 230 L960 150 M900 230 L840 300"/>
+    </g>
+    <g fill="#5ff2c0">
+      <circle cx="840" cy="70" r="3" opacity="0.6"/><circle cx="930" cy="40" r="3.5" opacity="0.8"/>
+      <circle cx="1010" cy="96" r="4" opacity="0.9"/><circle cx="1110" cy="58" r="3" opacity="0.7"/>
+      <circle cx="1190" cy="120" r="3.5" opacity="0.6"/><circle cx="960" cy="150" r="3" opacity="0.7"/>
+      <circle cx="1060" cy="190" r="5" opacity="0.95"/><circle cx="1170" cy="250" r="3" opacity="0.6"/>
+      <circle cx="990" cy="290" r="3.5" opacity="0.7"/><circle cx="1100" cy="330" r="3" opacity="0.5"/>
+      <circle cx="900" cy="230" r="3" opacity="0.6"/><circle cx="840" cy="300" r="2.5" opacity="0.5"/>
+    </g>
+    <circle cx="1060" cy="190" r="16" fill="none" stroke="#5ff2c0" stroke-opacity="0.35"/>
+
+    <!-- logo -->
+    <rect x="80" y="86" width="72" height="72" rx="20" fill="#5ff2c0" fill-opacity="0.1" stroke="url(#edge)" stroke-width="1.5"/>
+    <g transform="translate(92 98) scale(2)" fill="none" stroke="#7ef2c9" stroke-width="1.8" stroke-linejoin="round">
+      <path d="M12 3 L21.5 20 H2.5 Z"/>
+      <path d="M12 10 L16 17 H8 Z"/>
+    </g>
+
+    <text x="176" y="138" font-family="-apple-system, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#f3f6f9" letter-spacing="-1">Delta <tspan fill="#8a96a3" font-weight="500">AI</tspan></text>
+
+    <text x="80" y="232" font-family="-apple-system, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="52" font-weight="700" fill="#f3f6f9" letter-spacing="-1.6">Software that <tspan fill="url(#word)" font-style="italic" font-family="Georgia, 'Times New Roman', serif" font-weight="400">thinks</tspan>, ships</text>
+    <text x="80" y="292" font-family="-apple-system, 'Segoe UI', Inter, Helvetica, Arial, sans-serif" font-size="52" font-weight="700" fill="#f3f6f9" letter-spacing="-1.6">and stays secure.</text>
+
+    <!-- chips -->
+    <g font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="14" fill="#9aa6b2" letter-spacing="1.2">
+      <rect x="80" y="324" width="224" height="34" rx="17" fill="#ffffff" fill-opacity="0.04" stroke="#ffffff" stroke-opacity="0.1"/>
+      <text x="192" y="346" text-anchor="middle">WHATSAPP AI AGENTS</text>
+      <rect x="316" y="324" width="204" height="34" rx="17" fill="#ffffff" fill-opacity="0.04" stroke="#ffffff" stroke-opacity="0.1"/>
+      <text x="418" y="346" text-anchor="middle">BOOKING &amp; QUEUES</text>
+      <rect x="532" y="324" width="214" height="34" rx="17" fill="#ffffff" fill-opacity="0.04" stroke="#ffffff" stroke-opacity="0.1"/>
+      <text x="639" y="346" text-anchor="middle">BUSINESS SOFTWARE</text>
+    </g>
+
+    <text x="1200" y="370" text-anchor="end" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="15" fill="#5ff2c0" fill-opacity="0.8" letter-spacing="1">deltaaiinnovation.in</text>
+  </g>
+</svg>
