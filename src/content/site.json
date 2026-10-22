@@ -48,12 +48,8 @@
   },
   "foundingYear": 2026,
   "udyam": "UDYAM-DL-09-0054883",
-  "founder": {
-    "name": "Ankit Pandey",
-    "role": "Founder",
-    "initials": "AP",
-    "bio": "A software engineer who has built and modernised business software — HR systems, payment gateways and live customer-facing apps on .NET, React and SQL Server. He started Delta AI Innovation in 2026 to bring practical, secure AI to Indian small businesses, and still talks to every new client personally."
-  },
+  "gstin": "07EOLPP9943G1Z8",
+  "area": "Jaitpur, New Delhi 110044",
   "team": {
     "headline": "One team across AI, web, payments and cloud",
     "intro": "Delta AI Innovation is a team of engineers and designers who have built and modernised business software on .NET, React and SQL Server — HR systems, payment gateways and live customer-facing apps. We started Delta AI to bring practical, secure AI to Indian small businesses.",

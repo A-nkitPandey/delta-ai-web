@@ -43,6 +43,10 @@ const SiteSchema = z.object({
   }),
   foundingYear: z.number().int(),
   udyam: z.string().optional().default(''),
+  /** GST number, shown on /about and in the footer. */
+  gstin: z.string().regex(/^$|^[0-9]{2}[A-Z0-9]{13}$/, 'GSTIN must be 15 characters').default(''),
+  /** Public area of the place of business (no street address). */
+  area: z.string().default(''),
   /** Shown on /about. Leave out to hide the founder card. */
   founder: z
     .object({ name: z.string(), role: z.string(), bio: z.string(), initials: z.string().max(3) })
