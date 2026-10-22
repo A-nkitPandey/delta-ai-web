@@ -6,8 +6,6 @@ path: /privacy
 updated: 18 October 2026
 ---
 
-<!-- TEMPLATE: have this reviewed by a lawyer before launch. -->
-
 This policy explains what personal data Delta AI Innovation ("we") collects through this website and how we handle it, in line with India's Digital Personal Data Protection Act, 2023.
 
 ## What we collect

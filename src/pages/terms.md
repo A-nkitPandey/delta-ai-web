@@ -6,8 +6,6 @@ path: /terms
 updated: 9 October 2026
 ---
 
-<!-- TEMPLATE: have this reviewed by a lawyer before launch. -->
-
 By using this website you agree to these terms.
 
 ## Content

@@ -32,7 +32,3 @@ A same-day token system that runs in the phone's browser — no app to install. 
 - Mobile-first web app, tuned for low-end phones and patchy networks
 - Live queue updates without page refreshes
 - Locked-down by default: strict referrer policy, security headers, no third-party trackers
-
-## Results
-
-Add real numbers here once you have them — for example average wait, tokens per day and walk-outs saved. Numbers from a real client are your strongest sales tool.
